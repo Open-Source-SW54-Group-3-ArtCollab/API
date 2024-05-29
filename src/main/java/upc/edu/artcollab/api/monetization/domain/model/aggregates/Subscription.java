@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
 
 
 /**
@@ -31,8 +32,8 @@ public class Subscription extends AbstractAggregateRoot<Subscription> {
      */
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Getter
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
 
@@ -45,10 +46,21 @@ public class Subscription extends AbstractAggregateRoot<Subscription> {
     @Column(nullable = false)
     @Getter
     @Setter
-    private Boolean isActive;
+    private boolean isActive;
 
     protected Subscription() {
+        /**
+         * @summary
+         * default constructor
+         * used for hibernate
+         * and used lombok annotations for no args constructor
+         * and used jakarta persistence annotations for entity
+         * and used lombok annotations for no args constructor
+         */
+    }
 
+    public Subscription(CreateSubscriptionCommand command) {
+        this.isActive = command.isActive();
     }
 
 }

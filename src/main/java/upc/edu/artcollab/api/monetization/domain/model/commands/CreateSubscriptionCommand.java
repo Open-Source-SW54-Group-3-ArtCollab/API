@@ -11,7 +11,7 @@
 package upc.edu.artcollab.api.monetization.domain.model.commands;
 
 
-public record CreateSubscriptionCommand(Boolean isActive) {
+public record CreateSubscriptionCommand(boolean isActive) {
     /**
      * CreateSubscriptionCommand
      * @param isActive
@@ -23,9 +23,14 @@ public record CreateSubscriptionCommand(Boolean isActive) {
      */
 
     public CreateSubscriptionCommand{
-        if(isActive == null){
-            throw new IllegalArgumentException("isActive cannot be null");
-        }
+        /**
+         * CreateSubscriptionCommand
+         * @summary
+         * constructor for CreateSubscriptionCommand
+         * @param isActive
+         * - The isActive attribute of the subscription.
+         * - It must not be null.
+         */
     }
 
 }

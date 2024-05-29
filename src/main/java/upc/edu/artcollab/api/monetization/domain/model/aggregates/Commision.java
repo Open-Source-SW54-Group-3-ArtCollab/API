@@ -13,9 +13,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateCommisionCommand;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @summary
@@ -25,6 +26,7 @@ import java.util.Date;
  */
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Commision extends AbstractAggregateRoot<Commision> {
 
     /**
@@ -68,10 +70,9 @@ public class Commision extends AbstractAggregateRoot<Commision> {
      *
      */
 
-    @Column(nullable = false)
-    @Getter
     @CreatedDate
-    private Date date;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime date;
 
     protected Commision() {
         /**
@@ -96,6 +97,7 @@ public class Commision extends AbstractAggregateRoot<Commision> {
          */
         this.amount = command.amount();
         this.content = command.content();
+        this.date = LocalDateTime.now();
 
     }
 

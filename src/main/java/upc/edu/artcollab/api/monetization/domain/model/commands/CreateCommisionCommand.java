@@ -30,7 +30,7 @@ public record CreateCommisionCommand(double amount, String content) {
 
     public CreateCommisionCommand {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Amount and content must be greater than 0");
+            throw new IllegalArgumentException("Amount must be greater than 0");
         }
 
         if (content == null || content.isBlank() ) {
