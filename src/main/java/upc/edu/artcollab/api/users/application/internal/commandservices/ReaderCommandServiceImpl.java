@@ -3,7 +3,7 @@ package upc.edu.artcollab.api.users.application.internal.commandservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
 import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;
-import upc.edu.artcollab.api.users.domain.model.services.ReaderCommandService;
+import upc.edu.artcollab.api.users.domain.services.ReaderCommandService;
 import upc.edu.artcollab.api.users.infrastructure.persistence.jpa.ReaderRepository;
 
 import java.util.Optional;

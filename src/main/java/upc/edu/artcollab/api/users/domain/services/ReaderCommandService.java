@@ -1,4 +1,4 @@
-package upc.edu.artcollab.api.users.domain.model.services;
+package upc.edu.artcollab.api.users.domain.services;
 
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
 import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;

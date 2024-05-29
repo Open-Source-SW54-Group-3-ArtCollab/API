@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByEmailAndPasswordQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByIdQuery;
-import upc.edu.artcollab.api.users.domain.model.services.ReaderQueryService;
+import upc.edu.artcollab.api.users.domain.services.ReaderQueryService;
 import upc.edu.artcollab.api.users.infrastructure.persistence.jpa.ReaderRepository;
 
 import java.util.Optional;
