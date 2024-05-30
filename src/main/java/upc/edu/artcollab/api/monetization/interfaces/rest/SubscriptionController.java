@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Subscription;
+import upc.edu.artcollab.api.monetization.domain.model.queries.GetAllSubscriptionsActiveQuery;
 import upc.edu.artcollab.api.monetization.domain.model.queries.GetSubscriptionByIdQuery;
 import upc.edu.artcollab.api.monetization.domain.services.SubscriptionCommandService;
 import upc.edu.artcollab.api.monetization.domain.services.SubscriptionQueryService;
@@ -13,6 +14,7 @@ import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CreateSubscr
 import upc.edu.artcollab.api.monetization.interfaces.rest.transform.SubscriptionResourceFromEntityAssembler;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -87,5 +89,64 @@ public class SubscriptionController {
         }
         subscriptionCommandService.delete(subscriptionSearched.get());
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
+    }
+
+    /**
+     * @summary
+     * This method is used to update a Subscription by its id.
+     * @param id
+     * The id parameter is used to get the id of the Subscription.
+     * @return
+     * Returns a response entity.
+     */
+
+
+    @PutMapping("{id}")
+    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id){
+        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
+        if(subscriptionSearched.isEmpty()){
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
+        }
+        Subscription subscriptionExisted = subscriptionSearched.get();
+        subscriptionExisted.setActive(!subscriptionExisted.isActive());
+        subscriptionCommandService.update(subscriptionExisted);
+        return ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(subscriptionExisted));
+    }
+
+    /**
+     * @summary
+     * This method is used to get all the active Subscriptions.
+     * @return
+     * Returns a list of active Subscriptions.
+     */
+
+
+    private ResponseEntity<List<SubscriptionResource>> getAllSubscriptionsActive(){
+        var query = new GetAllSubscriptionsActiveQuery(true);
+        var subscriptions = subscriptionQueryService.handle(query);
+        if(subscriptions == null){
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
+        }
+        List<SubscriptionResource> subscriptionResources = subscriptions.stream().map( SubscriptionResourceFromEntityAssembler::fromEntity).toList();
+        return ResponseEntity.ok(subscriptionResources);
+    }
+
+    /**
+     * @summary
+     * This method is used to get all the Subscriptions with parameters.
+     * @param params
+     * The params parameter is used to get the parameters to filter the Subscriptions.
+     * @return
+     * Returns a response entity.
+     */
+
+    @GetMapping
+    public ResponseEntity<?> getSubscriptionsWithParameters(@RequestParam Map<String, String> params){
+        if(params.containsKey("active")){
+            return getAllSubscriptionsActive();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

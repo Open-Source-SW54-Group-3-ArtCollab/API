@@ -29,4 +29,10 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
         subscriptionRepository.delete(subscription);
         return Optional.of(subscription);
     }
+
+    @Override
+    public Optional<Subscription> update(Subscription subscription) {
+        var subscriptionUpdated = subscriptionRepository.save(subscription);
+        return Optional.of(subscriptionUpdated);
+    }
 }
