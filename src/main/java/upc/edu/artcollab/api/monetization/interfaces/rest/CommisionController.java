@@ -3,6 +3,8 @@ package upc.edu.artcollab.api.monetization.interfaces.rest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Commision;
+import upc.edu.artcollab.api.monetization.domain.model.queries.GetCommisionByIdQuery;
+import upc.edu.artcollab.api.monetization.domain.model.queries.GetCommisionsByAmountGreatherThanQuery;
 import upc.edu.artcollab.api.monetization.domain.services.CommisionCommandService;
 import upc.edu.artcollab.api.monetization.domain.services.CommisionQueryService;
 import upc.edu.artcollab.api.monetization.interfaces.rest.resources.CommisionResource;
@@ -11,7 +13,9 @@ import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CommisionRes
 import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CreateCommisionCommandFromResourceAssembler;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -23,7 +27,7 @@ import static org.springframework.http.HttpStatus.CREATED;
  */
 
 @RestController
-@RequestMapping("/api/v1/monetization/commissions")
+@RequestMapping("/api/v1/monetization/commisions")
 public class CommisionController {
     /**
      * @summary
@@ -54,16 +58,87 @@ public class CommisionController {
      * Returns a list of Commisions.
      */
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Commision>> getAll() {
         return ResponseEntity.ok(commissionQueryService.getAll());
     }
+
+    /**
+     * @summary
+     * This method is used to create a new Commision.
+     * The method takes a CreateCommisionResource object as input and returns a ResponseEntity object.
+     * @param resource
+     * The CreateCommisionResource object to be transformed into a Commision object.
+     * @return
+     * Returns a ResponseEntity object with the created Commision object.
+     */
 
     @PostMapping("/create")
     public ResponseEntity<CommisionResource> createCommision(@RequestBody CreateCommisionResource resource) {
         Optional<Commision> commisionOptional = commissionCommandService.handle(CreateCommisionCommandFromResourceAssembler.toCommandFromResource(resource));
         return commisionOptional.map(commision -> new ResponseEntity<>(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
 
+    /**
+     * @summary
+     * This method is used to get a Commision by its id.
+     * The method takes a Long id as input and returns a ResponseEntity object.
+     * @param id
+     * The id of the Commision to be retrieved.
+     * @return
+     * Returns a ResponseEntity object with the Commision object.
+     */
+
+    @GetMapping("{id}")
+    public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long id) {
+        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
+        return commisionOptional.map(commision -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision))).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    /**
+     * @summary
+     * This method is used to get all the Commisions with amount greater than the specified amount.
+     * The method takes a double amount as input and returns a ResponseEntity object.
+     * @param amount
+     * The amount to be used to filter the Commisions.
+     * @return
+     * Returns a ResponseEntity object with the list of Commisions.
+     */
+
+
+    private ResponseEntity<List<CommisionResource>> getCommisionsByAmountGreatherThan(double amount) {
+        var query = new GetCommisionsByAmountGreatherThanQuery(amount);
+        var commisions = commissionQueryService.handle(query);
+        if(commisions.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        List<CommisionResource> commisionResources = commisions.stream()
+                .map(CommisionResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(commisionResources);
+    }
+
+
+    /**
+     * @summary
+     * This method is used to get all the Commisions with parameters.
+     * The method takes a Map<String, String> params as input and returns a ResponseEntity object.
+     * @param params
+     * The parameters to be used to filter the Commisions.
+     * @return
+     * Returns a ResponseEntity object with the list of Commisions.
+     */
+
+    @GetMapping
+    public ResponseEntity<?> getCommisionsWithParameters(@RequestParam Map<String, String> params) {
+        if(params.containsKey("amount")){
+            double amount = Double.parseDouble(params.get("amount"));
+            return getCommisionsByAmountGreatherThan(amount);
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
