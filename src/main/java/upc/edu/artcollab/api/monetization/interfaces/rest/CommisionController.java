@@ -184,7 +184,7 @@ public class CommisionController {
     public ResponseEntity<?> deleteCommision(@PathVariable Long id){
         Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
         if(commisionOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
         }
         commissionCommandService.delete(commisionOptional.get());
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();

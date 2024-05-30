@@ -23,4 +23,10 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
         var subscriptionCreated = subscriptionRepository.save(subscription);
         return Optional.of(subscriptionCreated);
     }
+
+    @Override
+    public Optional<Subscription> delete(Subscription subscription) {
+        subscriptionRepository.delete(subscription);
+        return Optional.of(subscription);
+    }
 }

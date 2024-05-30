@@ -16,4 +16,5 @@ import java.util.Optional;
 public interface SubscriptionCommandService {
 
     Optional<Subscription> handle(CreateSubscriptionCommand command);
+    Optional<Subscription> delete(Subscription subscription);
 }
