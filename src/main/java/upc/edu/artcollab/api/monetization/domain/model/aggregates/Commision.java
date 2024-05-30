@@ -11,6 +11,7 @@ package upc.edu.artcollab.api.monetization.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -50,6 +51,7 @@ public class Commision extends AbstractAggregateRoot<Commision> {
 
     @Column(nullable = false)
     @Getter
+    @Setter
     private double amount;
 
     /**
@@ -61,6 +63,7 @@ public class Commision extends AbstractAggregateRoot<Commision> {
 
     @Column(nullable = false)
     @Getter
+    @Setter
     private String content;
 
     /**

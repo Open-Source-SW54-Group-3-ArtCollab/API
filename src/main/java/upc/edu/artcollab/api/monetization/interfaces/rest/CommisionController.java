@@ -1,5 +1,6 @@
 package upc.edu.artcollab.api.monetization.interfaces.rest;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Commision;
@@ -133,12 +134,60 @@ public class CommisionController {
     @GetMapping
     public ResponseEntity<?> getCommisionsWithParameters(@RequestParam Map<String, String> params) {
         if(params.containsKey("amount")){
-            double amount = Double.parseDouble(params.get("amount"));
-            return getCommisionsByAmountGreatherThan(amount);
+            return getCommisionsByAmountGreatherThan(Double.parseDouble(params.get("amount")));
         }
         else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    /**
+     * @summary
+     * This method is used to update a Commision.
+     * The method takes a Long id and CreateCommisionResource object as input and returns a ResponseEntity object.
+     * The method first checks if the Commision exists and then updates the Commision.
+     * @param id
+     * The id of the Commision to be updated.
+     * @param resource
+     * The CreateCommisionResource object to be transformed into a Commision object.
+     * @return
+     * Returns a ResponseEntity object with the updated Commision object.
+     */
+
+    @PutMapping("{id}")
+    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long id, @RequestBody CreateCommisionResource resource){
+        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
+        if(commisionOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Commision existingCommision = commisionOptional.get();
+        existingCommision.setAmount(resource.amount());
+        existingCommision.setContent(resource.content());
+        commissionCommandService.update(existingCommision);
+        return ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(existingCommision));
+    }
+
+
+    /**
+     * @summary
+     * This method is used to delete a Commision.
+     * The method takes a Long id as input and returns a ResponseEntity object.
+     * The method first checks if the Commision exists and then deletes the Commision.
+     * @param id
+     * The id of the Commision to be deleted.
+     * @return
+     * Returns a ResponseEntity object with the status of the deletion.
+     * If the Commision is not found, it returns a 404 not found status.
+     */
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteCommision(@PathVariable Long id){
+        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
+        if(commisionOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        commissionCommandService.delete(commisionOptional.get());
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
     }
 
 }
