@@ -47,7 +47,6 @@
 			<groupId>io.github.encryptorcode</groupId>
 			<artifactId>pluralize</artifactId>
 			<version>1.0.0</version>
-
 		</dependency>
 
 		<!-- mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
