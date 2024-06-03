@@ -1,4 +1,7 @@
 package upc.edu.artcollab.api.monetization.domain.model.commands;
 
-public record UpdateCommisionCommand() {
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Amount;
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Content;
+
+public record UpdateCommisionCommand(Amount amount, Content content) {
 }

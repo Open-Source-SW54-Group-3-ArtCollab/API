@@ -10,12 +10,14 @@ package upc.edu.artcollab.api.monetization.domain.services;
 
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Subscription;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteSubscriptionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateSubscriptionCommand;
 
 import java.util.Optional;
 
 public interface SubscriptionCommandService {
 
     Optional<Subscription> handle(CreateSubscriptionCommand command);
-    Optional<Subscription> delete(Subscription subscription);
-    Optional<Subscription> update (Subscription subscription);
+    void delete(DeleteSubscriptionCommand command);
+    Optional<Subscription> update (Long id, UpdateSubscriptionCommand command);
 }

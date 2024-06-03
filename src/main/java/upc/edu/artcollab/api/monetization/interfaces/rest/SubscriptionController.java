@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Subscription;
+import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteSubscriptionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateSubscriptionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.queries.GetAllSubscriptionsActiveQuery;
 import upc.edu.artcollab.api.monetization.domain.model.queries.GetSubscriptionByIdQuery;
 import upc.edu.artcollab.api.monetization.domain.services.SubscriptionCommandService;
@@ -83,12 +85,8 @@ public class SubscriptionController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
-        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
-        if(subscriptionSearched.isEmpty()){
-            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
-        }
-        subscriptionCommandService.delete(subscriptionSearched.get());
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
+        subscriptionCommandService.delete(new DeleteSubscriptionCommand(id));
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -102,15 +100,9 @@ public class SubscriptionController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id){
-        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
-        if(subscriptionSearched.isEmpty()){
-            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
-        }
-        Subscription subscriptionExisted = subscriptionSearched.get();
-        subscriptionExisted.setActive(!subscriptionExisted.isActive());
-        subscriptionCommandService.update(subscriptionExisted);
-        return ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(subscriptionExisted));
+    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id, @RequestBody UpdateSubscriptionCommand command){
+        Optional<Subscription> subscription = subscriptionCommandService.update(id, command);
+        return subscription.map(value -> ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**

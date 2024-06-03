@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Commision;
+import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteCommisionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateCommisionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.queries.GetCommisionByIdQuery;
 import upc.edu.artcollab.api.monetization.domain.model.queries.GetCommisionsByAmountGreatherThanQuery;
 import upc.edu.artcollab.api.monetization.domain.services.CommisionCommandService;
@@ -155,16 +157,9 @@ public class CommisionController {
      */
 
     @PutMapping("{id}")
-    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long id, @RequestBody CreateCommisionResource resource){
-        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
-        if(commisionOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        Commision existingCommision = commisionOptional.get();
-        existingCommision.setAmount(resource.amount().amount());
-        existingCommision.setContent(resource.content().content());
-        commissionCommandService.update(existingCommision);
-        return ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(existingCommision));
+    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long id, @RequestBody UpdateCommisionCommand resource){
+        Optional<Commision> commision = commissionCommandService.update(id, resource);
+        return commision.map(value -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 
@@ -182,11 +177,7 @@ public class CommisionController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteCommision(@PathVariable Long id){
-        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
-        if(commisionOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
-        }
-        commissionCommandService.delete(commisionOptional.get());
+        commissionCommandService.delete(new DeleteCommisionCommand(id));
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
     }
 
