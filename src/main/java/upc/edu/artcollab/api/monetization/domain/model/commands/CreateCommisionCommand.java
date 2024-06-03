@@ -13,28 +13,10 @@
 
 package upc.edu.artcollab.api.monetization.domain.model.commands;
 
-public record CreateCommisionCommand(double amount, String content) {
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Amount;
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Content;
 
-    /**
-     *
-     *  CreateCommisionCommand
-     * @param amount
-     *  - The amount of the commission.
-     *  - It must be greater than 0.
-     *  - It is validated in the constructor to ensure it is greater than 0.
-     * @param content
-     * - The content of the commission.
-     * - It must not be null or empty.
-     * - It is validated in the constructor to ensure it is not null or empty.
-     */
+public record CreateCommisionCommand(Amount amount, Content content) {
 
-    public CreateCommisionCommand {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0");
-        }
 
-        if (content == null || content.isBlank() ) {
-            throw new IllegalArgumentException("Content must not be null or empty");
-        }
-    }
 }

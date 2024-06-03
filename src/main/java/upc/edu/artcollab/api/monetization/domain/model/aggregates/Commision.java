@@ -98,10 +98,9 @@ public class Commision extends AbstractAggregateRoot<Commision> {
          * and used getter for all attributes
          * and used lombok annotations for aggregate attributes and extends AbstractAggregateRoot for aggregate root
          */
-        this.amount = command.amount();
-        this.content = command.content();
+        this.amount = command.amount().amount();
+        this.content = command.content().content();
         this.date = LocalDateTime.now();
-
     }
 
 

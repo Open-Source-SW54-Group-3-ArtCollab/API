@@ -7,13 +7,9 @@
 
 package upc.edu.artcollab.api.monetization.interfaces.rest.resources;
 
-public record CreateCommisionResource(double amount, String content) {
-    public CreateCommisionResource {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0");
-        }
-        if (content == null || content.isBlank()) {
-            throw new IllegalArgumentException("Content must not be null or empty");
-        }
-    }
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Amount;
+import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Content;
+
+public record CreateCommisionResource(Amount amount, Content content) {
+
 }

@@ -161,8 +161,8 @@ public class CommisionController {
             return ResponseEntity.notFound().build();
         }
         Commision existingCommision = commisionOptional.get();
-        existingCommision.setAmount(resource.amount());
-        existingCommision.setContent(resource.content());
+        existingCommision.setAmount(resource.amount().amount());
+        existingCommision.setContent(resource.content().content());
         commissionCommandService.update(existingCommision);
         return ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(existingCommision));
     }
