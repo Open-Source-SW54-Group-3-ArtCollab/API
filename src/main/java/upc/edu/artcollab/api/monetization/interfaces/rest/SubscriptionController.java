@@ -63,45 +63,45 @@ public class SubscriptionController {
     /**
      * @summary
      * This method is used to get a Subscription by its id.
-     * @param id
+     * @param subscriptionId
      * The id parameter is used to get the id of the Subscription.
      * @return
      */
 
-    @GetMapping("{id}")
-    public ResponseEntity<SubscriptionResource> getById(@PathVariable Long id){
-        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
+    @GetMapping("{subscriptionId}")
+    public ResponseEntity<SubscriptionResource> getById(@PathVariable Long subscriptionId){
+        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(subscriptionId));
         return subscriptionSearched.map(value -> ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
      * @summary
      * This method is used to delete a Subscription by its id.
-     * @param id
+     * @param subscriptionId
      * The id parameter is used to get the id of the Subscription.
      * @return
      * Returns a response entity.
      */
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
-        subscriptionCommandService.delete(new DeleteSubscriptionCommand(id));
+    @DeleteMapping("{subscriptionId}")
+    public ResponseEntity<?> deleteSubscription(@PathVariable Long subscriptionId){
+        subscriptionCommandService.delete(new DeleteSubscriptionCommand(subscriptionId));
         return ResponseEntity.ok().build();
     }
 
     /**
      * @summary
      * This method is used to update a Subscription by its id.
-     * @param id
+     * @param subscriptionId
      * The id parameter is used to get the id of the Subscription.
      * @return
      * Returns a response entity.
      */
 
 
-    @PutMapping("{id}")
-    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id, @RequestBody UpdateSubscriptionCommand command){
-        Optional<Subscription> subscription = subscriptionCommandService.update(id, command);
+    @PutMapping("{subscriptionId}")
+    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long subscriptionId, @RequestBody UpdateSubscriptionCommand command){
+        Optional<Subscription> subscription = subscriptionCommandService.update(subscriptionId, command);
         return subscription.map(value -> ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

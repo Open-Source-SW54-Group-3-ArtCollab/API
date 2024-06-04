@@ -86,15 +86,15 @@ public class CommisionController {
      * @summary
      * This method is used to get a Commision by its id.
      * The method takes a Long id as input and returns a ResponseEntity object.
-     * @param id
+     * @param commisionId
      * The id of the Commision to be retrieved.
      * @return
      * Returns a ResponseEntity object with the Commision object.
      */
 
-    @GetMapping("{id}")
-    public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long id) {
-        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
+    @GetMapping("{commisionId}")
+    public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long commisionId) {
+        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(commisionId));
         return commisionOptional.map(commision -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -148,7 +148,7 @@ public class CommisionController {
      * This method is used to update a Commision.
      * The method takes a Long id and CreateCommisionResource object as input and returns a ResponseEntity object.
      * The method first checks if the Commision exists and then updates the Commision.
-     * @param id
+     * @param commisionId
      * The id of the Commision to be updated.
      * @param resource
      * The CreateCommisionResource object to be transformed into a Commision object.
@@ -156,9 +156,9 @@ public class CommisionController {
      * Returns a ResponseEntity object with the updated Commision object.
      */
 
-    @PutMapping("{id}")
-    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long id, @RequestBody UpdateCommisionCommand resource){
-        Optional<Commision> commision = commissionCommandService.update(id, resource);
+    @PutMapping("{commisionId}")
+    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long commisionId, @RequestBody UpdateCommisionCommand resource){
+        Optional<Commision> commision = commissionCommandService.update(commisionId, resource);
         return commision.map(value -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
@@ -168,16 +168,16 @@ public class CommisionController {
      * This method is used to delete a Commision.
      * The method takes a Long id as input and returns a ResponseEntity object.
      * The method first checks if the Commision exists and then deletes the Commision.
-     * @param id
+     * @param commisionId
      * The id of the Commision to be deleted.
      * @return
      * Returns a ResponseEntity object with the status of the deletion.
      * If the Commision is not found, it returns a 404 not found status.
      */
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteCommision(@PathVariable Long id){
-        commissionCommandService.delete(new DeleteCommisionCommand(id));
+    @DeleteMapping("{commisionId}")
+    public ResponseEntity<?> deleteCommision(@PathVariable Long commisionId){
+        commissionCommandService.delete(new DeleteCommisionCommand(commisionId));
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
     }
 
