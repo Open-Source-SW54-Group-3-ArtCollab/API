@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
+import upc.edu.artcollab.api.shared.domain.model.aggregate.AuditableAbstractAggregateRoot;
 
 
 /**
@@ -22,19 +23,7 @@ import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscripti
  *
  */
 @Entity
-public class Subscription extends AbstractAggregateRoot<Subscription> {
-
-    /**
-     * @summary
-     * declare id and this have auto generated value
-     * and used lombok getter for id
-     *
-     */
-
-    @Id
-    @Getter
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long id;
+public class Subscription extends AuditableAbstractAggregateRoot<Subscription> {
 
 
     /**

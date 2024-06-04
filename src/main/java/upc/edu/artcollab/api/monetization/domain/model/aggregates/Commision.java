@@ -16,6 +16,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateCommisionCommand;
+import upc.edu.artcollab.api.shared.domain.model.aggregate.AuditableAbstractAggregateRoot;
 
 import java.time.LocalDateTime;
 
@@ -28,19 +29,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Commision extends AbstractAggregateRoot<Commision> {
+public class Commision extends AuditableAbstractAggregateRoot<Commision> {
 
-    /**
-     * @summary
-     * declare id and this have auto generated value
-     * and used lombok getter for id
-     *
-     */
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    private Long id;
 
     /**
      * @summary

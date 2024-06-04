@@ -1,4 +1,4 @@
-package upc.edu.artcollab.api.shared.persistence.jpa.strategy;
+package upc.edu.artcollab.api.shared.infrastructure.persistence.jpa.strategy;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
