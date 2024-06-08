@@ -45,6 +45,7 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
     /** The URL of the thumbnail of the template. */
     @Column(nullable = false, unique = true)
     @Getter
+    @Setter
     private String imgURL;
 
     /** The number of views of the template. */
