@@ -13,13 +13,29 @@ import upc.edu.artcollab.api.monetization.domain.model.commands.CreatePaymentCom
 @RequestMapping("/payments")
 public class PaymentController {
 
+    /**
+     * @summary
+     * PaymentCommandServiceImpl object.
+     * @param paymentCommandService The PaymentCommandServiceImpl object.
+     */
     private final PaymentCommandServiceImpl paymentCommandService;
-    
+
+    /**
+     * @summary
+     * Constructor for PaymentController class.
+     * @param paymentCommandService The PaymentCommandServiceImpl object.
+     */
     @Autowired
     public PaymentController(PaymentCommandServiceImpl paymentCommandService) {
         this.paymentCommandService = paymentCommandService;
     }
 
+    /**
+     * @summary
+     * This method is used to create a payment.
+     * @param command The CreatePaymentCommand object containing payment details.
+     * @return A ResponseEntity indicating the result of the payment creation.
+     */
     @PostMapping("/create")
     public ResponseEntity<String> createPayment(@RequestBody CreatePaymentCommand command) {
         try {
@@ -30,11 +46,24 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating payment");
         }
     }
+
+    /**
+     * @summary
+     * This method is used to cancel a payment.
+     * @return A ResponseEntity indicating that the payment was cancelled successfully.
+     */
     @GetMapping("/cancel")
     public ResponseEntity<String> cancelPay() {
         return ResponseEntity.ok("Payment cancelled");
     }
 
+    /**
+     * @summary
+     * This method is used to execute a payment.
+     * @param paymentId The ID of the payment.
+     * @param payerId The ID of the payer.
+     * @return A ResponseEntity containing the result of the payment execution.
+     */
     @GetMapping("/success")
     public ResponseEntity<String> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {

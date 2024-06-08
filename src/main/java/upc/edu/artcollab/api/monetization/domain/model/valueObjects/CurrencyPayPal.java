@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.paypal.api.payments.Currency;
 
 public record CurrencyPayPal(Currency currency) {
+
+    /**
+     * Creates a new CurrencyPayPal instance.
+     * @param currency
+     * @return
+     */
     @JsonCreator
     public static CurrencyPayPal of(Currency currency) {
         return new CurrencyPayPal(currency);

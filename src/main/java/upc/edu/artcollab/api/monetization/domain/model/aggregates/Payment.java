@@ -9,25 +9,69 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * @summary
+ * Created payment aggregate  and implements their attributes
+ *  and used lombok annotations for aggregate attributes
+ *  and used jakarta persistence annotations for entity and id
+ *  and used getter for all attributes
+ */
 public class Payment {
 
+    /**
+     * @summary
+     * declare amount and used lombok getter for amount
+     *
+     */
     @Getter
     private Amount amount;
 
+    /**
+     * @summary
+     * declare currency and used lombok getter for currency
+     *
+     */
     @Getter
     private Currency currency;
 
+    /**
+     * @summary
+     * declare description and used lombok getter for description
+     *
+     */
     @Getter
     private String description;
 
+    /**
+     * @summary
+     * declare status and used lombok getter for status
+     *
+     */
     @Getter
     private String status;
 
+    /**
+     * @summary
+     * declare date and used lombok getter for date
+     *
+     */
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime date;
+
+    /**
+     * @summary
+     * default constructor
+     * used for hibernate
+     * and used lombok annotations for no args constructor
+     * and used jakarta persistence annotations for entity
+     * and used lombok annotations for no args constructor
+     */
     protected Payment() {
     }
+
+
 
     public Payment(Amount amount, Currency currency, String description, String status) {
         this.amount = amount;
