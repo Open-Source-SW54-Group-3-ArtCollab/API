@@ -36,18 +36,36 @@ public class TemplateController {
         this.templateQueryService = templateQueryService;
     }
 
+    /**
+     * Creates a new template.
+     *
+     * @param resource the resource containing the details of the template to be created
+     * @return the created template resource, or a bad request response if the creation fails
+     */
     @PostMapping
     public ResponseEntity<TemplateResource> createTemplate(@RequestBody CreateTemplateResource resource) {
         Optional<Template> template = templateCommandService.handle(CreateTemplateCommandFromResourceAssembler.toCommandFromResource(resource));
         return template.map(source -> new ResponseEntity<>(TemplateResourceFromEntityAssembler.toResourceFromEntity(source), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Retrieves a template by its ID.
+     *
+     * @param id the ID of the template to retrieve
+     * @return the template resource, or a not found response if the template does not exist
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TemplateResource> getTemplateById(@PathVariable Integer id) {
         Optional<Template> template = templateQueryService.handle(new GetTemplateByIdQuery(id));
         return template.map(source -> ResponseEntity.ok(TemplateResourceFromEntityAssembler.toResourceFromEntity(source))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Retrieves all templates by genre.
+     *
+     * @param genre the genre of the templates to retrieve
+     * @return a list of template resources, or a not found response if no templates exist for the genre
+     */
     private ResponseEntity<List<TemplateResource>> getAllTemplatesByGenre(String genre) {
         var getAllTemplatesByGenreQuery = new GetAllTemplatesByGenreQuery(genre);
         var templates = templateQueryService.handle(getAllTemplatesByGenreQuery);
@@ -56,6 +74,12 @@ public class TemplateController {
         return ResponseEntity.ok(templateResources);
     }
 
+    /**
+     * Retrieves all templates by genre.
+     *
+     * @param params the query parameters
+     * @return a list of template resources, or a bad request response if the genre parameter is missing
+     */
     @GetMapping
     public ResponseEntity<?> getTemplatesWithParameters(@RequestParam Map<String, String> params) {
         if (params.containsKey("genre")) {
