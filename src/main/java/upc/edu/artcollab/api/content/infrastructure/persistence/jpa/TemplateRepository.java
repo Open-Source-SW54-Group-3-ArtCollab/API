@@ -11,7 +11,7 @@ import java.util.List;
  * <p>This repository provides methods to perform CRUD operations on Template entities, as well as custom queries
  * to find templates by their genre, description, and image URL.</p>
  */
-public interface TemplateRepository extends JpaRepository<Template, Long> {
+public interface TemplateRepository extends JpaRepository<Template, Integer> {
 
     /**
      * Finds all Template entities by the specified genre.
