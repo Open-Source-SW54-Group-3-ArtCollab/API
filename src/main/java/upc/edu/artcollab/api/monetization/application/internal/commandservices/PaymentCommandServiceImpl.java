@@ -2,6 +2,7 @@ package upc.edu.artcollab.api.monetization.application.internal.commandservices;
 
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.PaymentExecution;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
@@ -47,4 +48,17 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         }
 
         }
+
+    @Override
+    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
+        Payment payment = new Payment();
+        payment.setId(paymentId);
+
+        PaymentExecution paymentExecution = new PaymentExecution();
+        paymentExecution.setPayerId(payerId);
+
+        return payment.execute(apiContext, paymentExecution);
     }
+}
+
+
