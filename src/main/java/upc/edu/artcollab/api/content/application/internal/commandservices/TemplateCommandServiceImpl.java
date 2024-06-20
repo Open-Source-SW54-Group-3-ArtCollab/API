@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.content.domain.model.aggregates.Template;
 import upc.edu.artcollab.api.content.domain.model.commands.CreateTemplateCommand;
 import upc.edu.artcollab.api.content.domain.services.TemplateCommandService;
-import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.TemplateRepository;
+import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories.TemplateRepository;
 
 import java.util.Optional;
 

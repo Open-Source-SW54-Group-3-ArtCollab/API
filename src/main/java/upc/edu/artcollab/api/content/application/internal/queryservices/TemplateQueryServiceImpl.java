@@ -13,7 +13,7 @@ import upc.edu.artcollab.api.content.domain.model.aggregates.Template;
 import upc.edu.artcollab.api.content.domain.model.queries.GetAllTemplatesByGenreQuery;
 import upc.edu.artcollab.api.content.domain.model.queries.GetTemplateByIdQuery;
 import upc.edu.artcollab.api.content.domain.services.TemplateQueryService;
-import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.TemplateRepository;
+import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories.TemplateRepository;
 
 import java.util.List;
 import java.util.Optional;

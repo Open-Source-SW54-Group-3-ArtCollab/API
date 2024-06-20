@@ -3,8 +3,12 @@ package upc.edu.artcollab.api.content.domain.model.aggregates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ManyToAny;
 import org.springframework.data.annotation.CreatedDate;
 import upc.edu.artcollab.api.content.domain.model.commands.CreateTemplateCommand;
+import upc.edu.artcollab.api.content.domain.model.entities.Portfolio;
+import upc.edu.artcollab.api.content.domain.model.entities.TemplateHistory;
+import upc.edu.artcollab.api.content.domain.model.entities.TemplateState;
 import upc.edu.artcollab.api.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 import java.util.Date;
@@ -13,22 +17,12 @@ import java.util.Date;
 @Entity
 public class Template extends AuditableAbstractAggregateRoot<Template> {
 
-    /** The unique identifier of the favorite source. */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    private Integer id;
-
     /** The title of the template. */
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String title;
 
     /** The description of the template. */
     @Column(nullable = false, unique = true)
-    @Getter
-    @Setter
     private String description;
 
     /** The date and time when the template was published. */
@@ -38,48 +32,38 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
 
     /** The type of the template. */
     @Column(nullable = false, updatable = false)
-    @Getter
-    @Setter
     private String type;
 
     /** The URL of the thumbnail of the template. */
     @Column(nullable = false, unique = true)
-    @Getter
-    @Setter
     private String imgURL;
 
     /** The number of views of the template. */
     @Column(nullable = false)
-    @Getter
-    @Setter
     private Integer views;
 
     /** The number of likes of the template. */
     @Column(nullable = false)
-    @Getter
-    @Setter
     private Integer likes;
 
     /** The genre of the template. */
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String genre;
 
     /** The identifier of the state of the template. */
-    @Column(nullable = false)
-    @Getter
-    private Integer templateState_Id;
+    @ManyToOne
+    @JoinColumn(name = "templateState_Id", nullable = false)
+    private TemplateState templateState;
 
     /** The identifier of the history of the template. */
-    @Column(nullable = false)
-    @Getter
-    private Integer templateHistory_Id;
+    @OneToOne
+    @JoinColumn(name = "templateHistory_Id", nullable = false)
+    private TemplateHistory templateHistory;
 
     /** The identifier of the portfolio of the template. */
-    @Column(nullable = false)
-    @Getter
-    private Integer portfolio_Id;
+    @ManyToAny
+    @JoinColumn(name = "portfolio_Id", nullable = false)
+    private Portfolio portfolio;
 
     /**
      * Protected no-arg constructor for JPA.
@@ -92,7 +76,7 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
      *
      * @param command the CreateTemplateCommand command containing the details of the template
      */
-    public Template(CreateTemplateCommand command) {
+    public Template(CreateTemplateCommand command, TemplateState templateState, TemplateHistory templateHistory, Portfolio portfolio) {
         this.title = command.title();
         this.description = command.description();
         this.type = command.type();
@@ -100,8 +84,8 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
         this.views = command.views();
         this.likes = command.likes();
         this.genre = command.genre();
-        this.templateState_Id = command.templateState_Id();
-        this.templateHistory_Id = command.templateHistory_Id();
-        this.portfolio_Id = command.portfolio_Id();
+        this.templateState = templateState;
+        this.templateHistory = templateHistory;
+        this.portfolio = portfolio;
     }
 }
