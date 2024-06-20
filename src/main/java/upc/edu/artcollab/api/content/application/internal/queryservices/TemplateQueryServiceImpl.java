@@ -11,6 +11,7 @@ package upc.edu.artcollab.api.content.application.internal.queryservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.content.domain.model.aggregates.Template;
 import upc.edu.artcollab.api.content.domain.model.queries.GetAllTemplatesByGenreQuery;
+import upc.edu.artcollab.api.content.domain.model.queries.GetAllTemplatesQuery;
 import upc.edu.artcollab.api.content.domain.model.queries.GetTemplateByIdQuery;
 import upc.edu.artcollab.api.content.domain.services.TemplateQueryService;
 import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories.TemplateRepository;
@@ -52,5 +53,15 @@ public class TemplateQueryServiceImpl implements TemplateQueryService {
     @Override
     public Optional<Template> handle(GetTemplateByIdQuery query) {
         return templateRepository.findById(query.id());
+    }
+
+    /**
+     * Handles the GetAllTemplatesQuery query.
+     * @param query - the GetAllTemplatesQuery query
+     * @return a list of Template
+     */
+    @Override
+    public List<Template> handle(GetAllTemplatesQuery query) {
+        return templateRepository.findAll();
     }
 }

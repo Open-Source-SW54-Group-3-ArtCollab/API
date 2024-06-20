@@ -11,7 +11,7 @@ import java.util.Date;
 public class TemplateHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @LastModifiedDate
     @Column(nullable = false, updatable = false)

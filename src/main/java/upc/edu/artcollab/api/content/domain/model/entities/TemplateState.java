@@ -8,7 +8,7 @@ import lombok.Getter;
 public class TemplateState {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private Boolean flag;
@@ -18,5 +18,6 @@ public class TemplateState {
     }
 
     public TemplateState() {
+        this.flag = false;
     }
 }

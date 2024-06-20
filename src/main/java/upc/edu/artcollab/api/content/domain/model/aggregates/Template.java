@@ -1,9 +1,8 @@
 package upc.edu.artcollab.api.content.domain.model.aggregates;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ManyToAny;
 import org.springframework.data.annotation.CreatedDate;
 import upc.edu.artcollab.api.content.domain.model.commands.CreateTemplateCommand;
 import upc.edu.artcollab.api.content.domain.model.entities.Portfolio;
@@ -18,10 +17,12 @@ import java.util.Date;
 public class Template extends AuditableAbstractAggregateRoot<Template> {
 
     /** The title of the template. */
+    @NotBlank
     @Column(nullable = false)
     private String title;
 
     /** The description of the template. */
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String description;
 
@@ -31,10 +32,12 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
     private Date date_publish;
 
     /** The type of the template. */
+    @NotBlank
     @Column(nullable = false, updatable = false)
     private String type;
 
     /** The URL of the thumbnail of the template. */
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String imgURL;
 
@@ -61,7 +64,7 @@ public class Template extends AuditableAbstractAggregateRoot<Template> {
     private TemplateHistory templateHistory;
 
     /** The identifier of the portfolio of the template. */
-    @ManyToAny
+    @ManyToOne
     @JoinColumn(name = "portfolio_Id", nullable = false)
     private Portfolio portfolio;
 
