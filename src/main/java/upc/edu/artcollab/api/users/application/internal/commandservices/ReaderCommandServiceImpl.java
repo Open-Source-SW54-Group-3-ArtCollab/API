@@ -16,6 +16,11 @@ public class ReaderCommandServiceImpl implements ReaderCommandService {
         this.readerRepository = readerRepository;
     }
 
+    /**
+     * Handle the creation of a reader
+     * @param command the command to create a reader
+     * @return the created reader
+     */
     @Override
     public Optional<Reader> handle(CreateReaderCommand command) {
         if (readerRepository.existsByEmail(command.email())) {

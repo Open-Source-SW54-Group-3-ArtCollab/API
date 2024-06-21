@@ -10,6 +10,9 @@ import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;
 
 import java.util.Date;
 
+/**
+ * Reader entity
+ */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Reader extends AbstractAggregateRoot<Reader> {
