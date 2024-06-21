@@ -7,9 +7,8 @@
 
 package upc.edu.artcollab.api.monetization.interfaces.rest.resources;
 
-import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Amount;
-import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Content;
 
-public record CreateCommisionResource(Amount amount, Content content) {
+
+public record CreateCommisionResource(double amount, String content) {
 
 }

@@ -11,7 +11,6 @@ package upc.edu.artcollab.api.monetization.domain.services;
 
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Commision;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateCommisionCommand;
-import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteCommisionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateCommisionCommand;
 
@@ -20,6 +19,6 @@ import java.util.Optional;
 public interface CommisionCommandService {
 
     Optional<Commision> handle(CreateCommisionCommand command);
-    Optional<Commision> update(Long id,UpdateCommisionCommand command);
-    void delete(DeleteCommisionCommand command);
+    Optional<Commision> handle(Long id,UpdateCommisionCommand command);
+    Optional<Commision> handle(DeleteCommisionCommand command);
 }

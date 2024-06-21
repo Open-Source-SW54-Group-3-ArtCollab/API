@@ -1,5 +1,6 @@
 package upc.edu.artcollab.api.monetization.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,11 @@ import upc.edu.artcollab.api.monetization.domain.services.CommisionCommandServic
 import upc.edu.artcollab.api.monetization.domain.services.CommisionQueryService;
 import upc.edu.artcollab.api.monetization.interfaces.rest.resources.CommisionResource;
 import upc.edu.artcollab.api.monetization.interfaces.rest.resources.CreateCommisionResource;
+import upc.edu.artcollab.api.monetization.interfaces.rest.resources.UpdateCommisionResource;
+import upc.edu.artcollab.api.monetization.interfaces.rest.resources.UpdateSubscriptionResource;
 import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CommisionResourceFromEntityAssembler;
 import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CreateCommisionCommandFromResourceAssembler;
+import upc.edu.artcollab.api.monetization.interfaces.rest.transform.UpdateCommisionCommandFromResourceAssembler;
 
 import java.util.List;
 import java.util.Map;
@@ -24,13 +28,18 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 /**
  * @summary
- * Declares rest controller for Commision entity and its related services and classes in the monetization domain.
- * Request mapping is set to /api/v1/monetization/commissions to map the controller to the specified path.
- * The CommisionController class is used to handle the rest api requests related to the Commision entity.
+ * <p>
+ *      Declares rest controller for Commision entity and its related services and classes in the monetization domain.
+ *  Request mapping is set to /api/v1/monetization/commissions to map the controller to the specified path.
+ *   The CommisionController class is used to handle the rest api requests related to the Commision entity.
+ * </p>
+ * @author  U202212721 Mathias Jave Diaz
+ * @version 1.0
  */
 
 @RestController
 @RequestMapping("/api/v1/monetization/commisions")
+@Tag(name = "Commision", description = "Commision Controller")
 public class CommisionController {
     /**
      * @summary
@@ -61,7 +70,7 @@ public class CommisionController {
      * Returns a list of Commisions.
      */
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Commision>> getAll() {
         return ResponseEntity.ok(commissionQueryService.getAll());
     }
@@ -76,7 +85,7 @@ public class CommisionController {
      * Returns a ResponseEntity object with the created Commision object.
      */
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CommisionResource> createCommision(@RequestBody CreateCommisionResource resource) {
         Optional<Commision> commisionOptional = commissionCommandService.handle(CreateCommisionCommandFromResourceAssembler.toCommandFromResource(resource));
         return commisionOptional.map(commision -> new ResponseEntity<>(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
@@ -86,15 +95,15 @@ public class CommisionController {
      * @summary
      * This method is used to get a Commision by its id.
      * The method takes a Long id as input and returns a ResponseEntity object.
-     * @param commisionId
+     * @param id
      * The id of the Commision to be retrieved.
      * @return
      * Returns a ResponseEntity object with the Commision object.
      */
 
-    @GetMapping("{commisionId}")
-    public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long commisionId) {
-        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(commisionId));
+    @GetMapping("{id}")
+    public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long id) {
+        Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
         return commisionOptional.map(commision -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -109,6 +118,7 @@ public class CommisionController {
      * Returns a ResponseEntity object with the list of Commisions.
      */
 
+    @GetMapping({"/amount/{amount}"})
 
     private ResponseEntity<List<CommisionResource>> getCommisionsByAmountGreatherThan(double amount) {
         var query = new GetCommisionsByAmountGreatherThanQuery(amount);
@@ -123,43 +133,21 @@ public class CommisionController {
     }
 
 
-    /**
-     * @summary
-     * This method is used to get all the Commisions with parameters.
-     * The method takes a Map<String, String> params as input and returns a ResponseEntity object.
-     * @param params
-     * The parameters to be used to filter the Commisions.
-     * @return
-     * Returns a ResponseEntity object with the list of Commisions.
-     */
 
-    @GetMapping
-    public ResponseEntity<?> getCommisionsWithParameters(@RequestParam Map<String, String> params) {
-        if(params.containsKey("amount")){
-            return getCommisionsByAmountGreatherThan(Double.parseDouble(params.get("amount")));
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 
     /**
      * @summary
      * This method is used to update a Commision.
-     * The method takes a Long id and CreateCommisionResource object as input and returns a ResponseEntity object.
-     * The method first checks if the Commision exists and then updates the Commision.
-     * @param commisionId
-     * The id of the Commision to be updated.
-     * @param resource
-     * The CreateCommisionResource object to be transformed into a Commision object.
-     * @return
-     * Returns a ResponseEntity object with the updated Commision object.
+     * @param id The id of the Commision to be updated.
+     * @param updateCommisionResource The resource object to be transformed into a Commision object.
+     * @return Returns a ResponseEntity object with the updated Commision object.
      */
 
-    @PutMapping("{commisionId}")
-    public ResponseEntity<CommisionResource> updateCommision(@PathVariable Long commisionId, @RequestBody UpdateCommisionCommand resource){
-        Optional<Commision> commision = commissionCommandService.update(commisionId, resource);
-        return commision.map(value -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
+    @PutMapping("{id}")
+    public ResponseEntity<CommisionResource> updateCommision(@PathVariable long id, @RequestBody UpdateCommisionResource updateCommisionResource){
+        var command = UpdateCommisionCommandFromResourceAssembler.toCommandFromResource(id,updateCommisionResource);
+        Optional<Commision> commisionOptional = commissionCommandService.handle(id,command);
+        return commisionOptional.map(commision -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
@@ -168,17 +156,18 @@ public class CommisionController {
      * This method is used to delete a Commision.
      * The method takes a Long id as input and returns a ResponseEntity object.
      * The method first checks if the Commision exists and then deletes the Commision.
-     * @param commisionId
+     * @param id
      * The id of the Commision to be deleted.
      * @return
      * Returns a ResponseEntity object with the status of the deletion.
      * If the Commision is not found, it returns a 404 not found status.
      */
 
-    @DeleteMapping("{commisionId}")
-    public ResponseEntity<?> deleteCommision(@PathVariable Long commisionId){
-        commissionCommandService.delete(new DeleteCommisionCommand(commisionId));
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteCommision(@PathVariable long id){
+        var command = new DeleteCommisionCommand(id);
+        Optional<Commision> commisionOptional = commissionCommandService.handle(command);
+        return commisionOptional.map(commision -> ResponseEntity.ok().build()).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }

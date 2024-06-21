@@ -27,13 +27,14 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
     }
 
     @Override
-    public void delete(DeleteSubscriptionCommand command) {
+    public Optional<Subscription> handle(DeleteSubscriptionCommand command) {
         Optional<Subscription> subscriptionToDelete = subscriptionRepository.getSubscriptionById(command.id());
         subscriptionRepository.delete(subscriptionToDelete.get());
+        return Optional.of(subscriptionToDelete.get());
     }
 
     @Override
-    public Optional<Subscription> update(Long id,UpdateSubscriptionCommand command) {
+    public Optional<Subscription> handle(Long id,UpdateSubscriptionCommand command) {
         Optional<Subscription> subscriptionToUpdate = subscriptionRepository.getSubscriptionById(id);
         subscriptionToUpdate.get().setActive(command.isActive());
         subscriptionRepository.save(subscriptionToUpdate.get());

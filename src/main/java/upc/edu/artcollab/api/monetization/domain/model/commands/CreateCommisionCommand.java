@@ -13,10 +13,9 @@
 
 package upc.edu.artcollab.api.monetization.domain.model.commands;
 
-import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Amount;
-import upc.edu.artcollab.api.monetization.domain.model.valueObjects.Content;
 
-public record CreateCommisionCommand(Amount amount, Content content) {
+
+public record CreateCommisionCommand(double amount, String content) {
 
 
 }

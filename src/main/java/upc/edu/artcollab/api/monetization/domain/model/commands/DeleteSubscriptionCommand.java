@@ -1,4 +1,4 @@
 package upc.edu.artcollab.api.monetization.domain.model.commands;
 
-public record DeleteSubscriptionCommand(Long id) {
+public record DeleteSubscriptionCommand(long id) {
 }

@@ -28,18 +28,19 @@ public class CommisionCommandServiceImpl implements CommisionCommandService {
     }
 
     @Override
-    public Optional<Commision> update(Long id, UpdateCommisionCommand command) {
+    public Optional<Commision> handle(Long id, UpdateCommisionCommand command) {
           Optional<Commision>commisionToUpdate = commisionRepository.findById(id);
-          commisionToUpdate.get().setAmount(command.amount().amount());
-          commisionToUpdate.get().setContent(command.content().content());
+          commisionToUpdate.get().setAmount(command.amount());
+          commisionToUpdate.get().setContent(command.content());
           commisionRepository.save(commisionToUpdate.get());
           return Optional.of(commisionToUpdate.get());
     }
 
     @Override
-    public void delete(DeleteCommisionCommand command) {
+    public Optional<Commision> handle(DeleteCommisionCommand command) {
         Optional<Commision> commisionToDelete = commisionRepository.findById(command.id());
         commisionRepository.delete(commisionToDelete.get());
+        return Optional.of(commisionToDelete.get());
     }
 
 

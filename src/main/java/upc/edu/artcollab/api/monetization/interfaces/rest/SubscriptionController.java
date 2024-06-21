@@ -1,5 +1,6 @@
 package upc.edu.artcollab.api.monetization.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,10 @@ import upc.edu.artcollab.api.monetization.domain.model.queries.GetSubscriptionBy
 import upc.edu.artcollab.api.monetization.domain.services.SubscriptionCommandService;
 import upc.edu.artcollab.api.monetization.domain.services.SubscriptionQueryService;
 import upc.edu.artcollab.api.monetization.interfaces.rest.resources.CreateSubscriptionResource;
+import upc.edu.artcollab.api.monetization.interfaces.rest.resources.DeleteSubscriptionResource;
 import upc.edu.artcollab.api.monetization.interfaces.rest.resources.SubscriptionResource;
-import upc.edu.artcollab.api.monetization.interfaces.rest.transform.CreateSubscriptionCommandFromResourceAssembler;
-import upc.edu.artcollab.api.monetization.interfaces.rest.transform.SubscriptionResourceFromEntityAssembler;
+import upc.edu.artcollab.api.monetization.interfaces.rest.resources.UpdateSubscriptionResource;
+import upc.edu.artcollab.api.monetization.interfaces.rest.transform.*;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/v1/monetization/subscriptions")
+@Tag(name = "Subscription", description = "The Subscription Controller")
 public class SubscriptionController {
 
     private final SubscriptionQueryService subscriptionQueryService;
@@ -40,7 +43,7 @@ public class SubscriptionController {
      * Returns a list of Subscriptions.
      */
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Subscription>> getAll(){
         return ResponseEntity.ok(subscriptionQueryService.getAll());
     }
@@ -54,7 +57,7 @@ public class SubscriptionController {
      * Returns the Subscription with the specified id.
      */
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<SubscriptionResource> createSubscription(@RequestBody CreateSubscriptionResource resource){
         Optional<Subscription> subscription = subscriptionCommandService.handle(CreateSubscriptionCommandFromResourceAssembler.toCommandFromResource(resource));
         return subscription.map(value -> new ResponseEntity<>(SubscriptionResourceFromEntityAssembler.fromEntity(value), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
@@ -63,45 +66,48 @@ public class SubscriptionController {
     /**
      * @summary
      * This method is used to get a Subscription by its id.
-     * @param subscriptionId
+     * @param id
      * The id parameter is used to get the id of the Subscription.
      * @return
      */
 
-    @GetMapping("{subscriptionId}")
-    public ResponseEntity<SubscriptionResource> getById(@PathVariable Long subscriptionId){
-        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(subscriptionId));
+    @GetMapping("{id}")
+    public ResponseEntity<SubscriptionResource> getById(@PathVariable Long id){
+        Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
         return subscriptionSearched.map(value -> ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
      * @summary
      * This method is used to delete a Subscription by its id.
-     * @param subscriptionId
+     * @param id
      * The id parameter is used to get the id of the Subscription.
      * @return
      * Returns a response entity.
      */
 
-    @DeleteMapping("{subscriptionId}")
-    public ResponseEntity<?> deleteSubscription(@PathVariable Long subscriptionId){
-        subscriptionCommandService.delete(new DeleteSubscriptionCommand(subscriptionId));
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
+        var deleteSubscriptionResource = new DeleteSubscriptionResource(id);
+        var command = DeleteSubscriptionCommandFromResourceAssembler.toCommandFromResource(deleteSubscriptionResource);
+        subscriptionCommandService.handle(command);
         return ResponseEntity.ok().build();
     }
 
     /**
      * @summary
      * This method is used to update a Subscription by its id.
-     * @param subscriptionId
+     * @param id
      * The id parameter is used to get the id of the Subscription.
      * @return
      * Returns a response entity.
      */
 
 
-    @PutMapping("{subscriptionId}")
-    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long subscriptionId, @RequestBody UpdateSubscriptionCommand command){
-        Optional<Subscription> subscription = subscriptionCommandService.update(subscriptionId, command);
+    @PutMapping("{id}")
+    public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id, @RequestBody UpdateSubscriptionResource updateSubscriptionResource){
+        var command = UpdateSubscriptionCommandFromResourceAssembler.toCommandFromResource(id,updateSubscriptionResource);
+        Optional<Subscription> subscription = subscriptionCommandService.handle(id,command);
         return subscription.map(value -> ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.fromEntity(value))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
@@ -112,9 +118,10 @@ public class SubscriptionController {
      * Returns a list of active Subscriptions.
      */
 
+    @GetMapping("/active/{active}")
 
-    private ResponseEntity<List<SubscriptionResource>> getAllSubscriptionsActive(){
-        var query = new GetAllSubscriptionsActiveQuery(true);
+    private ResponseEntity<List<SubscriptionResource>> getAllSubscriptionsActive(@PathVariable boolean active){
+        var query = new GetAllSubscriptionsActiveQuery(active);
         var subscriptions = subscriptionQueryService.handle(query);
         if(subscriptions == null){
             return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
@@ -123,22 +130,4 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionResources);
     }
 
-    /**
-     * @summary
-     * This method is used to get all the Subscriptions with parameters.
-     * @param params
-     * The params parameter is used to get the parameters to filter the Subscriptions.
-     * @return
-     * Returns a response entity.
-     */
-
-    @GetMapping
-    public ResponseEntity<?> getSubscriptionsWithParameters(@RequestParam Map<String, String> params){
-        if(params.containsKey("active")){
-            return getAllSubscriptionsActive();
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }

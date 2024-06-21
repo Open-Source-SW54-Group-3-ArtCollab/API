@@ -18,6 +18,6 @@ import java.util.Optional;
 public interface SubscriptionCommandService {
 
     Optional<Subscription> handle(CreateSubscriptionCommand command);
-    void delete(DeleteSubscriptionCommand command);
-    Optional<Subscription> update (Long id, UpdateSubscriptionCommand command);
+    Optional<Subscription> handle(DeleteSubscriptionCommand command);
+    Optional<Subscription> handle (Long id,UpdateSubscriptionCommand command);
 }
