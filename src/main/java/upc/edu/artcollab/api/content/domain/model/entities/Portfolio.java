@@ -27,5 +27,8 @@ public class Portfolio extends AuditableModel {
     }
 
     public Portfolio() {
+        this.title = "";
+        this.description = "";
+        this.quantity = 0;
     }
 }
