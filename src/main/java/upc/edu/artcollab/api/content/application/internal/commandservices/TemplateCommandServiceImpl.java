@@ -11,9 +11,13 @@ package upc.edu.artcollab.api.content.application.internal.commandservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.content.domain.model.aggregates.Template;
 import upc.edu.artcollab.api.content.domain.model.commands.CreateTemplateCommand;
+import upc.edu.artcollab.api.content.domain.model.commands.DeleteTemplateCommand;
+import upc.edu.artcollab.api.content.domain.model.commands.UpdateTemplateCommand;
 import upc.edu.artcollab.api.content.domain.model.entities.Portfolio;
 import upc.edu.artcollab.api.content.domain.model.entities.TemplateHistory;
 import upc.edu.artcollab.api.content.domain.model.entities.TemplateState;
+import upc.edu.artcollab.api.content.domain.model.exceptions.TemplateWithTheSameDescriptionAlreadyExistsException;
+import upc.edu.artcollab.api.content.domain.model.exceptions.TemplateWithTheSameImgUrlAlreadyExistsException;
 import upc.edu.artcollab.api.content.domain.services.TemplateCommandService;
 import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories.PortfolioRepository;
 import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories.TemplateHistoryRepository;
@@ -39,10 +43,10 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
     @Override
     public Optional<Template> handle(CreateTemplateCommand command) {
         if (templateRepository.existsByDescription(command.description())) {
-            throw new IllegalArgumentException("Template with same description already exists");
+            throw new TemplateWithTheSameDescriptionAlreadyExistsException("Template with same description already exists");
         }
         if (templateRepository.existsByImgURL(command.imgURL())) {
-            throw new IllegalArgumentException("Template with same image URL already exists");
+            throw new TemplateWithTheSameImgUrlAlreadyExistsException("Template with same imgURL already exists");
         }
 
         TemplateState templateState = new TemplateState();
@@ -61,4 +65,32 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
         var createdTemplate = templateRepository.save(template);
         return Optional.of(createdTemplate);
     }
+
+    @Override
+    public Optional<Template> handle(DeleteTemplateCommand command) {
+        var template = templateRepository.findById(command.id())
+                .orElseThrow(() -> new IllegalArgumentException("Template not found"));
+        templateRepository.delete(template);
+        return Optional.of(template);
+    }
+
+    @Override
+    public Optional<Template> handle(UpdateTemplateCommand command) {
+     var template = templateRepository.findById(command.id());
+        if (template.isEmpty()) {
+            throw new IllegalArgumentException("Template not found");
+        }
+        template.get().setTitle(command.title());
+        template.get().setDescription(command.description());
+         template.get().setType(command.type());
+        template.get().setImgURL(command.imgURL());
+        template.get().setViews(command.views());
+        template.get().setLikes(command.likes());
+        template.get().setGenre(command.genre());
+        template.get().setTemplateState(templateStateRepository.findById(command.templateState_Id()).orElseThrow(() -> new IllegalArgumentException("TemplateState not found")));
+        template.get().setTemplateHistory(templateHistoryRepository.findById(command.templateHistory_Id()).orElseThrow(() -> new IllegalArgumentException("TemplateHistory not found")));
+        template.get().setPortfolio(portfolioRepository.findById(command.portfolio_Id()).orElseThrow(() -> new IllegalArgumentException("Portfolio not found")));
+        return template;
+    }
+
 }

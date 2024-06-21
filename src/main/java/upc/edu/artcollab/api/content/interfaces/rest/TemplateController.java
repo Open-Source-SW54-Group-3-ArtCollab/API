@@ -1,11 +1,14 @@
 package upc.edu.artcollab.api.content.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.content.domain.model.aggregates.Template;
+import upc.edu.artcollab.api.content.domain.model.commands.DeleteTemplateCommand;
 import upc.edu.artcollab.api.content.domain.model.queries.GetAllTemplatesByGenreQuery;
 import upc.edu.artcollab.api.content.domain.model.queries.GetAllTemplatesQuery;
 import upc.edu.artcollab.api.content.domain.model.queries.GetTemplateByIdQuery;
@@ -13,8 +16,10 @@ import upc.edu.artcollab.api.content.domain.services.TemplateCommandService;
 import upc.edu.artcollab.api.content.domain.services.TemplateQueryService;
 import upc.edu.artcollab.api.content.interfaces.rest.resources.CreateTemplateResource;
 import upc.edu.artcollab.api.content.interfaces.rest.resources.TemplateResource;
+import upc.edu.artcollab.api.content.interfaces.rest.resources.UpdateTemplateResource;
 import upc.edu.artcollab.api.content.interfaces.rest.transform.CreateTemplateCommandFromResourceAssembler;
 import upc.edu.artcollab.api.content.interfaces.rest.transform.TemplateResourceFromEntityAssembler;
+import upc.edu.artcollab.api.content.interfaces.rest.transform.UpdateTemplateCommandFromResourceAssembler;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +38,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping(value = "/api/v1/templates", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Template", description = "Template Controller")
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 public class TemplateController {
 
     private final TemplateCommandService templateCommandService;
@@ -55,6 +66,9 @@ public class TemplateController {
      * @param resource the resource containing the details of the template to be created
      * @return the created template resource, or a bad request response if the creation fails
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Created a new template"
+            ),})
     @Operation(summary = "Create a template", description = "Create a new template.")
     @PostMapping
     public ResponseEntity<TemplateResource> createTemplate(@RequestBody CreateTemplateResource resource) {
@@ -68,6 +82,9 @@ public class TemplateController {
      * @param id the ID of the template to retrieve
      * @return the template resource, or a not found response if the template does not exist
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Get a template by ID"
+            ),})
     @Operation(summary = "Get a template by ID", description = "Get a template by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<TemplateResource> getTemplateById(@PathVariable Integer id) {
@@ -81,6 +98,9 @@ public class TemplateController {
      * @param genre the genre of the templates to retrieve
      * @return a list of template resources, or a not found response if no templates exist for the genre
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Get all templates by genre"
+            ),})
     @Operation(summary = "Get all templates by genre", description = "Get all templates by genre.")
     @GetMapping("/genre/{genre}")
     private ResponseEntity<List<TemplateResource>> getAllTemplatesByGenre(@PathVariable String genre) {
@@ -96,6 +116,9 @@ public class TemplateController {
      *
      * @return a list of all template resources
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Get all templates"
+            ),})
     @Operation(summary = "Get all templates", description = "Get all templates.")
     @GetMapping
     public ResponseEntity<List<TemplateResource>> getAllTemplates() {
@@ -103,5 +126,27 @@ public class TemplateController {
         var templates = templateQueryService.handle(getAllTemplatesQuery);
         var templateResources = templates.stream().map(TemplateResourceFromEntityAssembler::toResourceFromEntity).collect(Collectors.toList());
         return ResponseEntity.ok(templateResources);
+    }
+
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Delete a template"
+            ),})
+    @Operation(summary = "Delete a template", description = "Delete a template.")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TemplateResource> deleteTemplate(@PathVariable Integer id) {
+        Optional<Template> template = templateCommandService.handle(new DeleteTemplateCommand(id));
+        return template.map(source -> new ResponseEntity<>(TemplateResourceFromEntityAssembler.toResourceFromEntity(source), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Update a template"
+            ),})
+    @Operation(summary = "Update a template", description = "Update a template.")
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TemplateResource> updateTemplate(@PathVariable Integer id, @RequestBody UpdateTemplateResource resource) {
+        var command = UpdateTemplateCommandFromResourceAssembler.toCommandFromResource(id, resource);
+        var template = templateCommandService.handle(command);
+        return template.map(source -> ResponseEntity.ok(TemplateResourceFromEntityAssembler.toResourceFromEntity(source))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -3,6 +3,7 @@ package upc.edu.artcollab.api.content.domain.model.aggregates;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import upc.edu.artcollab.api.content.domain.model.commands.CreateTemplateCommand;
 import upc.edu.artcollab.api.content.domain.model.entities.Portfolio;
@@ -13,6 +14,7 @@ import upc.edu.artcollab.api.shared.domain.model.aggregates.AuditableAbstractAgg
 import java.util.Date;
 
 @Getter
+@Setter
 @Entity
 public class Template extends AuditableAbstractAggregateRoot<Template> {
 
