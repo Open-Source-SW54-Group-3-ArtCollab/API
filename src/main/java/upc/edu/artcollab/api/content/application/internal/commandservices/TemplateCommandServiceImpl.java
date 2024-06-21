@@ -51,8 +51,11 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
         TemplateHistory templateHistory = new TemplateHistory();
         templateHistory = templateHistoryRepository.save(templateHistory);
 
-        Portfolio portfolio = new Portfolio();
-        portfolio = portfolioRepository.save(portfolio);
+        Portfolio portfolio = portfolioRepository.findById(command.portfolio_Id())
+                .orElseGet(() -> {
+                    Portfolio newPortfolio = new Portfolio(command.portfolio_Id(), "Default title", "Default description", 0);
+                    return portfolioRepository.save(newPortfolio);
+                });
 
         var template = new Template(command, templateState, templateHistory, portfolio);
         var createdTemplate = templateRepository.save(template);
