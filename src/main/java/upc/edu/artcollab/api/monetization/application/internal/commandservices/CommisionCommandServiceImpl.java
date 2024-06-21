@@ -6,6 +6,7 @@ import upc.edu.artcollab.api.monetization.domain.model.commands.CreateCommisionC
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteCommisionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateCommisionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.exceptions.InvalidCommisionException;
 import upc.edu.artcollab.api.monetization.domain.services.CommisionCommandService;
 import upc.edu.artcollab.api.monetization.infrastructure.persistence.jpa.CommisionRepository;
 
@@ -23,6 +24,9 @@ public class CommisionCommandServiceImpl implements CommisionCommandService {
     @Override
     public Optional<Commision> handle(CreateCommisionCommand command) {
         var commision = new Commision(command);
+        if(command.amount() <= 0){
+            throw new InvalidCommisionException("Amount must be greater than 0");
+        }
         var createdCommision = commisionRepository.save(commision);
         return Optional.of(createdCommision);
     }
