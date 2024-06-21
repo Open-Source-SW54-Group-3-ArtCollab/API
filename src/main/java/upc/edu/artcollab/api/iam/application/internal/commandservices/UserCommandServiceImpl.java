@@ -42,7 +42,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         } else {
             stringRoles.forEach(role -> {
                 try {
-                    Roles roleEnum = Roles.valueOf(role.toString().toUpperCase());
+                    Roles roleEnum = Roles.valueOf(role.getStringName());
                     var storedRole = roleRepository.findByName(roleEnum);
                     storedRole.ifPresent(roles::add);
                 } catch (IllegalArgumentException e) {
