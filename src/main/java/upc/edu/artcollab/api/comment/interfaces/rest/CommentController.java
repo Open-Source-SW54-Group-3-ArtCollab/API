@@ -11,16 +11,18 @@ import upc.edu.artcollab.api.comment.domain.services.CommentQueryService;
 import upc.edu.artcollab.api.comment.interfaces.rest.resource.CreateCommentResource;
 import upc.edu.artcollab.api.comment.interfaces.rest.resource.CommentResource;
 import upc.edu.artcollab.api.comment.interfaces.rest.resource.DeleteCommentResource;
+import upc.edu.artcollab.api.comment.interfaces.rest.resource.UpdateCommentResource;
 import upc.edu.artcollab.api.comment.interfaces.rest.transform.CommentResourceFromEntityAssembler;
 import upc.edu.artcollab.api.comment.interfaces.rest.transform.CreateCommentCommandFromResourceAssembler;
 import upc.edu.artcollab.api.comment.interfaces.rest.transform.DeleteCommentCommandFromResourceAssembler;
+import upc.edu.artcollab.api.comment.interfaces.rest.transform.UpdateCommentCommandFromResourceAssembler;
 
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/collaboration/comments")
+@RequestMapping("api/v1/collaboration")
 @Tag(name = "Comment", description = "Comment Controller")
 public class CommentController {
     private final CommentCommandService commentCommandService;
@@ -55,6 +57,13 @@ public class CommentController {
         var deleteCommentResource = new DeleteCommentResource(id);
         var command = DeleteCommentCommandFromResourceAssembler.toCommandFromResource(deleteCommentResource);
         return commentCommandService.handle(command);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommentResource> updateComment(@PathVariable Long id, @RequestBody UpdateCommentResource updateCommentResource) {
+        var command = UpdateCommentCommandFromResourceAssembler.toCommandFromResource(id, updateCommentResource);
+        var comment = commentCommandService.handle(command);
+        return comment.map(value -> ResponseEntity.ok(CommentResourceFromEntityAssembler.toResourceFromEntity(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

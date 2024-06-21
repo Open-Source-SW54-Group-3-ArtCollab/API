@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.comment.domain.model.aggregates.Comment;
 import upc.edu.artcollab.api.comment.domain.model.commands.CreateCommentCommand;
 import upc.edu.artcollab.api.comment.domain.model.commands.DeleteCommentCommand;
+import upc.edu.artcollab.api.comment.domain.model.commands.UpdateCommentCommand;
 import upc.edu.artcollab.api.comment.domain.services.CommentCommandService;
 import upc.edu.artcollab.api.comment.infrastructure.persistance.jpa.CommentRepository;
 
@@ -31,6 +32,15 @@ public class CommentCommandServiceImpl implements CommentCommandService {
         var favoriteComment = favoriteCommentRepository.findById(command.id());
         favoriteComment.ifPresent(favoriteCommentRepository::delete);
         return favoriteComment;
+    }
+
+    @Override
+    public Optional<Comment> handle(UpdateCommentCommand command) {
+        var comment = favoriteCommentRepository.findById(command.id());
+        if(comment.isPresent()){
+            comment.get().setContent(command.content());
+        }
+        return comment;
     }
 
 }
