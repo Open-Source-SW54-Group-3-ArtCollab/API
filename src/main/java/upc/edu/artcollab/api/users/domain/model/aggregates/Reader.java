@@ -2,25 +2,24 @@ package upc.edu.artcollab.api.users.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import upc.edu.artcollab.api.shared.infrastructure.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;
 
-import java.util.Date;
+/**
+ * Reader aggregate root.
+ * <p>
+ *     This class represents a reader in the domain model.
+ * </p>
+ * @author Gustavo Huilca Chipana
+ */
 
 /**
  * Reader entity
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Reader extends AbstractAggregateRoot<Reader> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
-    @Getter
-    private Long id;
+public class Reader extends AuditableAbstractAggregateRoot<Reader> {
 
     @Column(nullable = false)
     @Getter
@@ -46,13 +45,6 @@ public class Reader extends AbstractAggregateRoot<Reader> {
     @Getter
     private String imgUrl;
 
-    @CreatedDate
-    @Column(updatable = false, nullable = false)
-    private Date createdAt = new Date();
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private Date updatedAt = new Date();
 
     protected Reader() {
     }
