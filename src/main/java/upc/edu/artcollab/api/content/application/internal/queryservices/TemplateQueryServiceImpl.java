@@ -19,6 +19,15 @@ import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TemplateQueryServiceImpl
+ * <p>
+ *     This class implements the TemplateQueryService interface. It contains the methods to handle the queries
+ *     GetAllTemplatesByGenreQuery and GetTemplateByIdQuery.
+ * </p>
+ * @author Camila Elena Amaro Villanueva U202114248
+ * @version 1.0
+ */
 @Service
 public class TemplateQueryServiceImpl implements TemplateQueryService {
 

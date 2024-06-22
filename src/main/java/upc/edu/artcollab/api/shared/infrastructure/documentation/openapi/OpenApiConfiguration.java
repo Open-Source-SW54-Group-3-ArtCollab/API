@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfiguration {
     @Bean
     public OpenAPI artcollabPlatformOpenApi() {
-        // General configuration
         var openApi = new OpenAPI();
         openApi
                 .info(new Info()

@@ -13,59 +13,56 @@ import upc.edu.artcollab.api.shared.domain.model.aggregates.AuditableAbstractAgg
 
 import java.util.Date;
 
+/**
+ * The Template class is an aggregate root entity model.
+ * <p>
+ *     This class represents the Template aggregate root. It contains the attributes of a Template.
+ * </p>
+ * @author Camila Elena Amaro Villanueva U202114248
+ * @version 1.0
+ */
 @Getter
 @Setter
 @Entity
 public class Template extends AuditableAbstractAggregateRoot<Template> {
 
-    /** The title of the template. */
     @NotBlank
     @Column(nullable = false)
     private String title;
 
-    /** The description of the template. */
     @NotBlank
     @Column(nullable = false, unique = true)
     private String description;
 
-    /** The date and time when the template was published. */
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Date date_publish;
 
-    /** The type of the template. */
     @NotBlank
     @Column(nullable = false, updatable = false)
     private String type;
 
-    /** The URL of the thumbnail of the template. */
     @NotBlank
     @Column(nullable = false, unique = true)
     private String imgURL;
 
-    /** The number of views of the template. */
     @Column(nullable = false)
     private Integer views;
 
-    /** The number of likes of the template. */
     @Column(nullable = false)
     private Integer likes;
 
-    /** The genre of the template. */
     @Column(nullable = false)
     private String genre;
 
-    /** The identifier of the state of the template. */
     @ManyToOne
     @JoinColumn(name = "templateState_Id", nullable = false)
     private TemplateState templateState;
 
-    /** The identifier of the history of the template. */
     @OneToOne
     @JoinColumn(name = "templateHistory_Id", nullable = false)
     private TemplateHistory templateHistory;
 
-    /** The identifier of the portfolio of the template. */
     @ManyToOne
     @JoinColumn(name = "portfolio_Id", nullable = false)
     private Portfolio portfolio;

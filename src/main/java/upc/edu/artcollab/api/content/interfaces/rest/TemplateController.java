@@ -33,6 +33,7 @@ import static org.springframework.http.HttpStatus.CREATED;
  *     This class is responsible for handling the REST API requests related to templates.
  *     It is responsible for creating templates and retrieving templates by ID or genre.
  * </p>
+ * @author Camila Elena Amaro Villanueva U202114248
  * @version 1.0
  */
 @RestController
@@ -128,6 +129,12 @@ public class TemplateController {
         return ResponseEntity.ok(templateResources);
     }
 
+    /**
+     * Deletes a template by its ID.
+     *
+     * @param id the ID of the template to delete
+     * @return the deleted template resource, or a bad request response if the deletion fails
+     */
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Delete a template"
             ),})
@@ -138,6 +145,13 @@ public class TemplateController {
         return template.map(source -> new ResponseEntity<>(TemplateResourceFromEntityAssembler.toResourceFromEntity(source), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+
+    /**
+     * Update a template
+     * @param id
+     * @param resource
+     * @return the updated template resource, or a not found response if the template does not exist
+     */
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Update a template"
             ),})

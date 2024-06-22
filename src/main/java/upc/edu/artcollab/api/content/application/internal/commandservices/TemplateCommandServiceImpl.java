@@ -26,6 +26,14 @@ import upc.edu.artcollab.api.content.infrastructure.persistence.jpa.repositories
 
 import java.util.Optional;
 
+/**
+ * TemplateCommandServiceImpl
+ * <p>
+ *     This class implements the TemplateCommandService interface. It contains the method to handle the creation of a template.
+ * </p>
+ * @author Camila Elena Amaro Villanueva U202114248
+ * @version 1.0
+ */
 @Service
 public class TemplateCommandServiceImpl implements TemplateCommandService {
     private final TemplateRepository templateRepository;
@@ -33,6 +41,16 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
     private final TemplateStateRepository templateStateRepository;
     private final PortfolioRepository portfolioRepository;
 
+    /**
+     * TemplateCommandServiceImpl
+     * <p>
+     *     Constructor for the TemplateCommandServiceImpl class.
+     * </p>
+     * @param templateRepository The template repository.
+     * @param templateHistoryRepository The template history repository.
+     * @param templateStateRepository The template state repository.
+     * @param portfolioRepository The portfolio repository.
+     */
     public TemplateCommandServiceImpl(TemplateRepository templateRepository, TemplateHistoryRepository templateHistoryRepository, TemplateStateRepository templateStateRepository, PortfolioRepository portfolioRepository) {
         this.templateRepository = templateRepository;
         this.portfolioRepository = portfolioRepository;
@@ -40,6 +58,14 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
         this.templateStateRepository = templateStateRepository;
     }
 
+    /**
+     * Handle CreateTemplateCommand
+     * <p>
+     *     This method is responsible for handling the CreateTemplateCommand command.
+     * </p>
+     * @param command The CreateTemplateCommand command.
+     * @return Optional<Template> The created template.
+     */
     @Override
     public Optional<Template> handle(CreateTemplateCommand command) {
         if (templateRepository.existsByDescription(command.description())) {
@@ -66,6 +92,14 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
         return Optional.of(createdTemplate);
     }
 
+    /**
+     * Handle DeleteTemplateCommand
+     * <p>
+     *     This method is responsible for handling the DeleteTemplateCommand command.
+     * </p>
+     * @param command The DeleteTemplateCommand command.
+     * @return Optional<Template> The deleted template.
+     */
     @Override
     public Optional<Template> handle(DeleteTemplateCommand command) {
         var template = templateRepository.findById(command.id())
@@ -74,6 +108,14 @@ public class TemplateCommandServiceImpl implements TemplateCommandService {
         return Optional.of(template);
     }
 
+    /**
+     * Handle UpdateTemplateCommand
+     * <p>
+     *     This method is responsible for handling the UpdateTemplateCommand command.
+     * </p>
+     * @param command The UpdateTemplateCommand command.
+     * @return Optional<Template> The updated template.
+     */
     @Override
     public Optional<Template> handle(UpdateTemplateCommand command) {
      var template = templateRepository.findById(command.id());

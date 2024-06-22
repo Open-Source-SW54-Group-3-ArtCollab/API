@@ -8,6 +8,14 @@ import upc.edu.artcollab.api.content.domain.model.queries.GetTemplateByIdQuery;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The TemplateQueryService interface provides methods to handle queries related to the Template entity.
+ * <p>
+ *     This interface provides methods to handle queries related to the Template entity.
+ * </p>
+ * @author Camila Elena Amaro Villanueva U202114248
+ * @version 1.0
+ */
 public interface TemplateQueryService {
     Optional<Template> handle(GetTemplateByIdQuery query);
     List<Template> handle(GetAllTemplatesByGenreQuery query);
