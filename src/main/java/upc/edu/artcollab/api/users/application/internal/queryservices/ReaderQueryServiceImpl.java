@@ -2,6 +2,7 @@ package upc.edu.artcollab.api.users.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
+import upc.edu.artcollab.api.users.domain.model.queries.GetAllReadersQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByEmailAndPasswordQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByIdQuery;
 import upc.edu.artcollab.api.users.domain.services.ReaderQueryService;
@@ -25,5 +26,10 @@ public class ReaderQueryServiceImpl implements ReaderQueryService{
     @Override
     public Optional<Reader> handle(GetReaderByIdQuery query) {
         return readerRepository.findById(query.id());
+    }
+
+    @Override
+    public Optional<Reader> handle(GetAllReadersQuery query) {
+        return readerRepository.findAllReaders();
     }
 }

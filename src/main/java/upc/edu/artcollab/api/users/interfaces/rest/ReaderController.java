@@ -1,17 +1,23 @@
 package upc.edu.artcollab.api.users.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
+import upc.edu.artcollab.api.users.domain.model.commands.DeleteReaderCommand;
+import upc.edu.artcollab.api.users.domain.model.queries.GetAllReadersQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByEmailAndPasswordQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByIdQuery;
 import upc.edu.artcollab.api.users.domain.services.ReaderCommandService;
 import upc.edu.artcollab.api.users.domain.services.ReaderQueryService;
 import upc.edu.artcollab.api.users.interfaces.rest.resources.CreateReaderResource;
 import upc.edu.artcollab.api.users.interfaces.rest.resources.ReaderResource;
+import upc.edu.artcollab.api.users.interfaces.rest.resources.UpdateReaderResource;
 import upc.edu.artcollab.api.users.interfaces.rest.transform.CreateReaderCommandFromResourceAssembler;
 import upc.edu.artcollab.api.users.interfaces.rest.transform.ReaderResourceFromEntityAssembler;
+import upc.edu.artcollab.api.users.interfaces.rest.transform.UpdateReaderCommandFromResourceAssembler;
 
 import java.util.Optional;
 
@@ -32,6 +38,13 @@ import static org.springframework.http.HttpStatus.OK;
  * @autor Gustavo Huilca Chipana - u202213983
  */
 
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "The request was not successful"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "An unexpected error occurred on the server side"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "The request was not authorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "The request was forbidden"),
+})
+@Tag(name = "Readers", description = "The Reader Controller")
 @RestController
 @RequestMapping("/api/v1/readers")
 public class ReaderController {
@@ -49,6 +62,10 @@ public class ReaderController {
      * @return the created Reader
      */
     @Operation(summary = "Create a new Reader", description = "Create a new Reader with the data provided in the request body")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "The request was not successful"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "The Reader was created successfully")
+    })
     @PostMapping
     public ResponseEntity<ReaderResource> createReader(@RequestBody CreateReaderResource resource) {
         Optional<Reader> reader = readerCommandService.handle(CreateReaderCommandFromResourceAssembler.toCommandFromResource(resource));
@@ -60,6 +77,10 @@ public class ReaderController {
      * @param id the id of the Reader
      * @return the Reader
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was found")
+    })
     @Operation(summary = "Get a Reader by id", description = "Get a Reader by id")
     @GetMapping("{id}")
     public ResponseEntity<ReaderResource> getReaderById(@PathVariable Long id) {
@@ -75,8 +96,46 @@ public class ReaderController {
      */
     @Operation(summary = "Get a Reader by email and password", description = "Get a Reader by email and password")
     @GetMapping("{email}/{password}")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was found")
+    })
     public ResponseEntity<ReaderResource> getReaderByEmailAndPassword(@PathVariable String email, @PathVariable String password) {
         Optional<Reader> reader = readerQueryService.handle(new GetReaderByEmailAndPasswordQuery(email, password));
+        return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @Operation(summary = "Delete a Reader by id", description = "Delete a Reader by id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was deleted")
+    })
+    @DeleteMapping("{id}")
+    public ResponseEntity<ReaderResource> deleteReader(@PathVariable long id){
+        var command = new DeleteReaderCommand(id);
+        Optional<Reader> reader = readerCommandService.handle(command);
+        return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @Operation(summary = "Get all Readers", description = "Get all Readers")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Readers were not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Readers were found")
+    })
+    @GetMapping
+    public ResponseEntity<ReaderResource> getAllReaders(){
+        var query = new GetAllReadersQuery();
+        Optional<Reader> reader = readerQueryService.handle(query);
+        return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Update a Reader by id", description = "Update a Reader by id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was updated")
+    })
+    @PutMapping("{id}")
+    public ResponseEntity<ReaderResource> updateReader(@PathVariable long id, UpdateReaderResource updateReaderResource){
+        var command = UpdateReaderCommandFromResourceAssembler.toCommandFromResource(id,updateReaderResource);
+        Optional<Reader> reader = readerCommandService.handle(command);
         return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

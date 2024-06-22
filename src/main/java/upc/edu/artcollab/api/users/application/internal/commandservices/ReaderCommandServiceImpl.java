@@ -3,6 +3,8 @@ package upc.edu.artcollab.api.users.application.internal.commandservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
 import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;
+import upc.edu.artcollab.api.users.domain.model.commands.DeleteReaderCommand;
+import upc.edu.artcollab.api.users.domain.model.commands.UpdateReaderCommand;
 import upc.edu.artcollab.api.users.domain.model.exceptions.EmailAleradyExistsException;
 import upc.edu.artcollab.api.users.domain.model.exceptions.InvalidUserTypeException;
 import upc.edu.artcollab.api.users.domain.model.exceptions.UsernameAlreadyExistsException;
@@ -36,5 +38,31 @@ public class ReaderCommandServiceImpl implements ReaderCommandService {
         var createdReader = readerRepository.save(reader);
 
         return Optional.of(createdReader);
+    }
+
+    @Override
+    public Optional<Reader> handle(DeleteReaderCommand command) {
+        var reader = readerRepository.findById(command.id());
+        if (reader.isEmpty()) {
+            return Optional.empty();
+        }
+        readerRepository.delete(reader.get());
+        return reader;
+    }
+
+    @Override
+    public Optional<Reader> handle(UpdateReaderCommand command) {
+        var reader = readerRepository.findById(command.id());
+        if (reader.isEmpty()) {
+            return Optional.empty();
+        }
+        reader.get().setEmail(command.email());
+        reader.get().setUsername(command.username());
+        reader.get().setPassword(command.password());
+       reader.get().setImgUrl(command.imgUrl());
+       reader.get().setType(command.type());
+       reader.get().setName(command.name());
+       return reader;
+
     }
 }
