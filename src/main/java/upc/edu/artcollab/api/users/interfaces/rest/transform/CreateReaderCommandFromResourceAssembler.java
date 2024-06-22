@@ -5,6 +5,6 @@ import upc.edu.artcollab.api.users.interfaces.rest.resources.CreateReaderResourc
 
 public class CreateReaderCommandFromResourceAssembler {
     public static CreateReaderCommand toCommandFromResource(CreateReaderResource resource) {
-        return new CreateReaderCommand(resource.name(), resource.username(), resource.email(), resource.password(), resource.type(), resource.imgUrl());
+        return new CreateReaderCommand(resource.name(), resource.username(), resource.email(), resource.password(),resource.type(), resource.imgUrl());
     }
 }

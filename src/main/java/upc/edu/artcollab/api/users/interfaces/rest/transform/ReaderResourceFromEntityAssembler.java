@@ -5,6 +5,6 @@ import upc.edu.artcollab.api.users.interfaces.rest.resources.ReaderResource;
 
 public class ReaderResourceFromEntityAssembler {
     public static ReaderResource toResourceFromEntity(Reader reader) {
-        return new ReaderResource(reader.getId(), reader.getName(), reader.getUsername(), reader.getEmail(), reader.getType(), reader.getImgUrl());
+        return new ReaderResource(reader.getId(), reader.getName(), reader.getUsername(), reader.getEmail(), reader.getType().name().toLowerCase(), reader.getImgUrl());
     }
 }

@@ -3,6 +3,9 @@ package upc.edu.artcollab.api.users.application.internal.commandservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
 import upc.edu.artcollab.api.users.domain.model.commands.CreateReaderCommand;
+import upc.edu.artcollab.api.users.domain.model.exceptions.EmailAleradyExistsException;
+import upc.edu.artcollab.api.users.domain.model.exceptions.InvalidUserTypeException;
+import upc.edu.artcollab.api.users.domain.model.exceptions.UsernameAlreadyExistsException;
 import upc.edu.artcollab.api.users.domain.services.ReaderCommandService;
 import upc.edu.artcollab.api.users.infrastructure.persistence.jpa.ReaderRepository;
 
@@ -24,12 +27,11 @@ public class ReaderCommandServiceImpl implements ReaderCommandService {
     @Override
     public Optional<Reader> handle(CreateReaderCommand command) {
         if (readerRepository.existsByEmail(command.email())) {
-            throw new IllegalArgumentException("The email is already in use.");
+            throw new EmailAleradyExistsException("The email is already in use.");
         }
         if (readerRepository.existsByUsername(command.username())) {
-            throw new IllegalArgumentException("The username is already in use.");
+            throw new UsernameAlreadyExistsException("The username is already in use.");
         }
-
         var reader = new Reader(command);
         var createdReader = readerRepository.save(reader);
 
