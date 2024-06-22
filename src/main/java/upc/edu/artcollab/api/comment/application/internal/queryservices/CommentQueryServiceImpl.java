@@ -10,6 +10,18 @@ import upc.edu.artcollab.api.comment.infrastructure.persistance.jpa.CommentRepos
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of the CommentQueryService
+ * This class is used to handle the queries for the Comment entity
+ * <p>
+ *     This class is annotated with @Service to indicate that it is a Spring service
+ * </p>
+ * @see CommentQueryService
+ * @see GetCommentByIdQuery
+ * @see GetAllComments
+ * @version 1.0
+ * @author Juan Alejandro Cuadros Rodriguez - u20221a359
+ */
 @Service
 public class CommentQueryServiceImpl implements CommentQueryService {
 
@@ -19,12 +31,21 @@ public class CommentQueryServiceImpl implements CommentQueryService {
         this.favoriteCommentRepository = favoriteCommentRepository;
     }
 
-
+    /**
+     * Handles the query to get a comment by its id
+     * @param query the query to get a comment by its id
+     * @return the comment if found
+     */
     @Override
     public Optional<Comment> handle(GetCommentByIdQuery query) {
         return favoriteCommentRepository.findById(query.commentId());
     }
 
+    /**
+     * Handles the query to get all comments
+     * @param query the query to get all comments
+     * @return the list of comments
+     */
     @Override
     public List<Comment> handle(GetAllComments query) {
         return  favoriteCommentRepository.findAllComments();

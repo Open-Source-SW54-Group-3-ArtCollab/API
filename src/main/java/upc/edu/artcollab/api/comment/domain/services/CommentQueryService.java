@@ -7,6 +7,12 @@ import upc.edu.artcollab.api.comment.domain.model.queries.GetCommentByIdQuery;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface for the CommentQueryService
+ * This interface is used to handle the queries for the Comment entity
+ * The handle(GetCommentByIdQuery query) method gets a Comment object by its id
+ * The handle(GetAllComments query) method gets all Comment objects
+ */
 
 public interface CommentQueryService {
 

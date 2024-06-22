@@ -8,6 +8,14 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import upc.edu.artcollab.api.comment.domain.model.commands.CreateCommentCommand;
 
+/**
+ * Comment aggregate root
+ * <p>
+ *     This class represents the Comment aggregate root.
+ * </p>
+ * @version 1.0.0
+ * @author Juan Alejandro Cuadros Rodriguez - U20221A359
+ */
 
 @Getter
 @Setter

@@ -23,6 +23,23 @@ import upc.edu.artcollab.api.comment.interfaces.rest.transform.UpdateCommentComm
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * CommentController
+ * <p>
+ *     This class is the controller for the Comment API
+ *     It handles the creation of comments and the retrieval of all comments
+ *     It follows this endpoints:
+ *     <ul>
+ *         <li>POST /api/v1/collaboration</li>
+ *         <li>GET /api/v1/collaboration/{id}</li>
+ *         <li>GET /api/v1/collaboration</li>
+ *         <li>DELETE /api/v1/collaboration/{id}</li>
+ *         <li>PUT /api/v1/collaboration/{id}</li>
+ *         </ul>
+ *     </p>
+ * @version 1.0
+ * @author Juan Alejandro Cuadros Rodriguez - u20221a359
+ */
 @RestController
 @RequestMapping("api/v1/collaboration")
 @Tag(name = "Comment", description = "Comment Controller")
@@ -42,6 +59,11 @@ public class CommentController {
         this.commentQueryService = commentQueryService;
     }
 
+    /**
+     * Create a comment
+     * @param resource CreateCommentResource
+     * @return CommentResource
+     */
     @Operation(summary = "Create a comment")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Comment created"),
@@ -53,6 +75,11 @@ public class CommentController {
         return favoriteComment.map(comment -> new ResponseEntity<>(CommentResourceFromEntityAssembler.toResourceFromEntity(comment), org.springframework.http.HttpStatus.CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * Get a comment by id
+     * @param id Long
+     * @return CommentResource
+     */
     @Operation(summary = "Get a comment by id")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Comment found"),
@@ -64,6 +91,10 @@ public class CommentController {
         return favoriteComment.map(comment -> ResponseEntity.ok(CommentResourceFromEntityAssembler.toResourceFromEntity(comment))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Get all comments
+     * @return List<CommentResource>
+     */
     @Operation(summary = "Get all comments")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Comments found"),
@@ -75,6 +106,12 @@ public class CommentController {
         var comments = commentQueryService.handle(query);
         return comments.stream().map(CommentResourceFromEntityAssembler::toResourceFromEntity).toList();
     }
+
+    /**
+     * Delete a comment
+     * @param id Long
+     * @return Optional<?>
+     */
     @Operation(summary = "Delete a comment")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Comment deleted"),
@@ -86,6 +123,13 @@ public class CommentController {
         var command = DeleteCommentCommandFromResourceAssembler.toCommandFromResource(deleteCommentResource);
         return commentCommandService.handle(command);
     }
+
+    /**
+     * Update a comment
+     * @param id Long
+     * @param updateCommentResource UpdateCommentResource
+     * @return ResponseEntity<CommentResource>
+     */
     @Operation(summary = "Update a comment")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Comment updated"),
