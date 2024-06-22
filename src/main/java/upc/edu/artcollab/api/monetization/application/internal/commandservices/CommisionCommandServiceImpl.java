@@ -3,6 +3,7 @@ package upc.edu.artcollab.api.monetization.application.internal.commandservices;
 import org.springframework.stereotype.Service;
 import upc.edu.artcollab.api.monetization.domain.model.aggregates.Commision;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreateCommisionCommand;
+import upc.edu.artcollab.api.monetization.domain.model.commands.CreateSubscriptionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.DeleteCommisionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateCommisionCommand;
 import upc.edu.artcollab.api.monetization.domain.model.exceptions.InvalidCommisionException;
