@@ -1,5 +1,7 @@
 package upc.edu.artcollab.api.monetization.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/v1/monetization/subscriptions")
 @Tag(name = "Subscription", description = "The Subscription Controller")
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Not authorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 public class SubscriptionController {
 
     private final SubscriptionQueryService subscriptionQueryService;
@@ -43,6 +51,12 @@ public class SubscriptionController {
      * Returns a list of Subscriptions.
      */
 
+    @Operation(summary = "Get all Subscriptions")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subscriptions found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Subscriptions not found"),
+    })
+
     @GetMapping
     public ResponseEntity<List<Subscription>> getAll(){
         return ResponseEntity.ok(subscriptionQueryService.getAll());
@@ -56,7 +70,10 @@ public class SubscriptionController {
      * @return
      * Returns the Subscription with the specified id.
      */
-
+    @Operation(summary = "Create a new Subscription")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Subscription created"),
+    })
     @PostMapping
     public ResponseEntity<SubscriptionResource> createSubscription(@RequestBody CreateSubscriptionResource resource){
         Optional<Subscription> subscription = subscriptionCommandService.handle(CreateSubscriptionCommandFromResourceAssembler.toCommandFromResource(resource));
@@ -71,6 +88,11 @@ public class SubscriptionController {
      * @return
      */
 
+    @Operation(summary = "Get a Subscription by its id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subscription found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Subscription not found"),
+    })
     @GetMapping("{id}")
     public ResponseEntity<SubscriptionResource> getById(@PathVariable Long id){
         Optional<Subscription> subscriptionSearched = subscriptionQueryService.handle(new GetSubscriptionByIdQuery(id));
@@ -86,6 +108,11 @@ public class SubscriptionController {
      * Returns a response entity.
      */
 
+    @Operation(summary = "Delete a Subscription by its id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subscription deleted"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Subscription not found"),
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
         var deleteSubscriptionResource = new DeleteSubscriptionResource(id);
@@ -104,6 +131,11 @@ public class SubscriptionController {
      */
 
 
+    @Operation(summary = "Update a Subscription by its id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subscription updated"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+    })
     @PutMapping("{id}")
     public ResponseEntity<SubscriptionResource> updateSubscription(@PathVariable Long id, @RequestBody UpdateSubscriptionResource updateSubscriptionResource){
         var command = UpdateSubscriptionCommandFromResourceAssembler.toCommandFromResource(id,updateSubscriptionResource);
@@ -118,6 +150,11 @@ public class SubscriptionController {
      * Returns a list of active Subscriptions.
      */
 
+    @Operation(summary = "Get all active Subscriptions")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subscriptions found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Subscriptions not found"),
+    })
     @GetMapping("/active/{active}")
 
     private ResponseEntity<List<SubscriptionResource>> getAllSubscriptionsActive(@PathVariable boolean active){

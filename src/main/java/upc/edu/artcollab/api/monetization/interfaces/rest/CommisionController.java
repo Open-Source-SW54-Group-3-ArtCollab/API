@@ -1,5 +1,7 @@
 package upc.edu.artcollab.api.monetization.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/v1/monetization/commisions")
 @Tag(name = "Commision", description = "Commision Controller")
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Not authorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 public class CommisionController {
     /**
      * @summary
@@ -70,6 +78,11 @@ public class CommisionController {
      * Returns a list of Commisions.
      */
 
+    @Operation(summary = "Get all Commisions")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Commisions retrieved"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "No Commisions found")
+    })
     @GetMapping
     public ResponseEntity<List<Commision>> getAll() {
         return ResponseEntity.ok(commissionQueryService.getAll());
@@ -85,7 +98,11 @@ public class CommisionController {
      * Returns a ResponseEntity object with the created Commision object.
      */
 
+    @Operation(summary = "Create a Commision")
     @PostMapping
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Commision created"),
+    })
     public ResponseEntity<CommisionResource> createCommision(@RequestBody CreateCommisionResource resource) {
         Optional<Commision> commisionOptional = commissionCommandService.handle(CreateCommisionCommandFromResourceAssembler.toCommandFromResource(resource));
         return commisionOptional.map(commision -> new ResponseEntity<>(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
@@ -102,6 +119,11 @@ public class CommisionController {
      */
 
     @GetMapping("{id}")
+    @Operation(summary = "Get a Commision by id")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Commision retrieved"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Commision not found")
+    })
     public ResponseEntity<CommisionResource> getCommisionbyId(@PathVariable Long id) {
         Optional<Commision> commisionOptional = commissionQueryService.handle(new GetCommisionByIdQuery(id));
         return commisionOptional.map(commision -> ResponseEntity.ok(CommisionResourceFromEntityAssembler.toResourceFromEntity(commision))).orElseGet(() -> ResponseEntity.notFound().build());
@@ -118,8 +140,12 @@ public class CommisionController {
      * Returns a ResponseEntity object with the list of Commisions.
      */
 
+    @Operation(summary = "Get Commisions by amount greater than")
     @GetMapping({"/amount/{amount}"})
-
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Commisions retrieved"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "No Commisions found")
+    })
     private ResponseEntity<List<CommisionResource>> getCommisionsByAmountGreatherThan(double amount) {
         var query = new GetCommisionsByAmountGreatherThanQuery(amount);
         var commisions = commissionQueryService.handle(query);
@@ -143,7 +169,12 @@ public class CommisionController {
      * @return Returns a ResponseEntity object with the updated Commision object.
      */
 
+    @Operation(summary = "Update a Commision")
     @PutMapping("{id}")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Commision updated"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Commision not found")
+    })
     public ResponseEntity<CommisionResource> updateCommision(@PathVariable long id, @RequestBody UpdateCommisionResource updateCommisionResource){
         var command = UpdateCommisionCommandFromResourceAssembler.toCommandFromResource(id,updateCommisionResource);
         Optional<Commision> commisionOptional = commissionCommandService.handle(id,command);
@@ -163,7 +194,12 @@ public class CommisionController {
      * If the Commision is not found, it returns a 404 not found status.
      */
 
+    @Operation(summary = "Delete a Commision")
     @DeleteMapping("{id}")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Commision deleted"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Commision not found")
+    })
     public ResponseEntity<?> deleteCommision(@PathVariable long id){
         var command = new DeleteCommisionCommand(id);
         Optional<Commision> commisionOptional = commissionCommandService.handle(command);

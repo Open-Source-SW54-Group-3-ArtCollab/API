@@ -1,5 +1,7 @@
 package upc.edu.artcollab.api.iam.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +31,12 @@ import upc.edu.artcollab.api.iam.interfaces.rest.transform.UserResourceFromEntit
  *     </ul>
  * </p>
  */
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Not authorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 @RestController
 @RequestMapping(value = "/api/v1/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Authentication", description = "Authentication Endpoints")
@@ -44,6 +52,11 @@ public class AuthenticationController {
      * @param signInResource the sign-in request body.
      * @return the authenticated user resource.
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "User authenticated"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    @Operation(summary = "Sign in", description = "Sign in with the provided credentials")
     @PostMapping("/sign-in")
     public ResponseEntity<AuthenticatedUserResource> signIn(@RequestBody SignInResource signInResource) {
         var signInCommand = SignInCommandFromResourceAssembler.toCommandFromResource(signInResource);
@@ -61,6 +74,11 @@ public class AuthenticationController {
      * @return the created user resource.
      */
     @PostMapping("/sign-up")
+    @Operation(summary = "Sign up", description = "Sign up with the provided credentials")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "User created"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+    })
     public ResponseEntity<UserResource> signUp(@RequestBody SignUpResource signUpResource) {
         var signUpCommand = SignUpCommandFromResourceAssembler.toCommandFromResource(signUpResource);
         var user = userCommandService.handle(signUpCommand);

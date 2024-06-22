@@ -11,6 +11,15 @@ import upc.edu.artcollab.api.monetization.infrastructure.persistence.jpa.Commisi
 
 import java.util.Optional;
 
+/**
+ * CommisionCommandServiceImpl
+ *  <p>
+ *       This class implements the CommisionCommandService interface and provides the implementation for the
+ *        methods declared in the interface.
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 @Service
 public class CommisionCommandServiceImpl implements CommisionCommandService {
 

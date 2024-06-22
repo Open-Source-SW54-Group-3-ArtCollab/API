@@ -11,6 +11,15 @@ import upc.edu.artcollab.api.monetization.infrastructure.persistence.jpa.Subscri
 
 import java.util.Optional;
 
+/**
+ * SubscriptionCommandServiceImpl
+ *  <p>
+ *      This class implements the SubscriptionCommandService interface and provides the implementation for the
+ *      SubscriptionCommandService methods.
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 @Service
 public class SubscriptionCommandServiceImpl implements SubscriptionCommandService {
 

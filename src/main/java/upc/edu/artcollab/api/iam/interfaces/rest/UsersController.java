@@ -1,5 +1,7 @@
 package upc.edu.artcollab.api.iam.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,12 @@ import java.util.List;
  * - GET /api/v1/users: returns all the users
  * - GET /api/v1/users/{userId}: returns the user with the given id
  **/
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Not authorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Users", description = "User Management Endpoints")
@@ -36,6 +44,10 @@ public class UsersController {
      * @return a list of user resources
      * @see UserResource
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "List of users"),
+    })
+    @Operation(summary = "Get all users")
     @GetMapping
     public ResponseEntity<List<UserResource>> getAllUsers() {
         var getAllUsersQuery = new GetAllUsersQuery();
@@ -51,6 +63,10 @@ public class UsersController {
      * @throws RuntimeException if the user is not found
      * @see UserResource
      */
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    @Operation(summary = "Get user by id")
     @GetMapping(value = "/{userId}")
     public ResponseEntity<UserResource> getUserById(@PathVariable Long userId) {
         var getUserByIdQuery = new GetUserByIdQuery(userId);
