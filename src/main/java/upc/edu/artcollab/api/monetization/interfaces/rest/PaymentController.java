@@ -2,6 +2,9 @@ package upc.edu.artcollab.api.monetization.interfaces.rest;
 
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,33 +12,51 @@ import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.monetization.application.internal.commandservices.PaymentCommandServiceImpl;
 import upc.edu.artcollab.api.monetization.domain.model.commands.CreatePaymentCommand;
 
+/**
+ *  Payment Controller
+ *  <p>
+ *      This class is used to handle the REST API endpoints related to payments.
+ *  </p>
+ * @author Samira Alvarez Araguache
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/payments")
+@Tag(name = "Payment", description = "Payment Controller, use Paypal external Service")
+@ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad Request"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden"),
+})
 public class PaymentController {
 
     /**
-     * @summary
-     * PaymentCommandServiceImpl object.
+     * @summary PaymentCommandServiceImpl object.
      * @param paymentCommandService The PaymentCommandServiceImpl object.
      */
     private final PaymentCommandServiceImpl paymentCommandService;
 
     /**
-     * @summary
-     * Constructor for PaymentController class.
      * @param paymentCommandService The PaymentCommandServiceImpl object.
+     * @summary Constructor for PaymentController class.
      */
+
     @Autowired
     public PaymentController(PaymentCommandServiceImpl paymentCommandService) {
         this.paymentCommandService = paymentCommandService;
     }
 
     /**
-     * @summary
-     * This method is used to create a payment.
      * @param command The CreatePaymentCommand object containing payment details.
      * @return A ResponseEntity indicating the result of the payment creation.
+     * @summary This method is used to create a payment.
      */
+    @Operation(summary = "Create a payment")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Payment created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error creating payment")
+    })
     @PostMapping("/create")
     public ResponseEntity<String> createPayment(@RequestBody CreatePaymentCommand command) {
         try {
@@ -48,22 +69,29 @@ public class PaymentController {
     }
 
     /**
-     * @summary
-     * This method is used to cancel a payment.
      * @return A ResponseEntity indicating that the payment was cancelled successfully.
+     * @summary This method is used to cancel a payment.
      */
+    @Operation(summary = "Cancel a payment")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Payment cancelled successfully")
+    })
     @GetMapping("/cancel")
     public ResponseEntity<String> cancelPay() {
         return ResponseEntity.ok("Payment cancelled");
     }
 
     /**
-     * @summary
-     * This method is used to execute a payment.
      * @param paymentId The ID of the payment.
-     * @param payerId The ID of the payer.
+     * @param payerId   The ID of the payer.
      * @return A ResponseEntity containing the result of the payment execution.
+     * @summary This method is used to execute a payment.
      */
+    @Operation(summary = "Execute a payment")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Payment successful"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error executing payment")
+    })
     @GetMapping("/success")
     public ResponseEntity<String> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
@@ -76,9 +104,4 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error executing payment: " + e.getMessage());
         }
     }
-//    @PostMapping("/create")
-//    public ResponseEntity<PaymentResource> createPayment(@RequestBody CreatePaymentResource resource) {
-//        Optional<Payment> paymentOptional = paymentCommandService.createPayment(CreatePaymentCommand.fromResource(resource));
-//        return paymentOptional.map(payment -> new ResponseEntity<>(PaymentResource.fromEntity(payment), CREATED)).orElseGet(() -> ResponseEntity.badRequest().build());
-//    }
 }
