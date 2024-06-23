@@ -16,10 +16,12 @@ import upc.edu.artcollab.api.shared.domain.model.aggregate.AuditableAbstractAggr
 
 
 /**
- * @summary
- * used lombok annotations for aggregate attributes and extends AbstractAggregateRoot for aggregate root
- * and used jakarta persistence annotations for entity and id
- * and used getter and setter for isActive attribute
+ *  Subscription aggregate root
+ *  <p>
+ *      This class is the aggregate root for the Subscription aggregate.
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
  *
  */
 @Entity

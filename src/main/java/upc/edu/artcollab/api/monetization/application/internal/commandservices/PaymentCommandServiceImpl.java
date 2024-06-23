@@ -13,6 +13,14 @@ import upc.edu.artcollab.api.monetization.domain.services.PaymentCommandService;
 
 import java.util.Collections;
 
+/**
+ * Implementation of the PaymentCommandService interface
+ * <p>
+ *     This class is responsible for implementing the methods defined in the PaymentCommandService interface.
+ * </p>
+ * @author U20221271 Mathias Jave Diaz
+ * @version 1.0
+ */
 @Service
 public class PaymentCommandServiceImpl implements PaymentCommandService {
 

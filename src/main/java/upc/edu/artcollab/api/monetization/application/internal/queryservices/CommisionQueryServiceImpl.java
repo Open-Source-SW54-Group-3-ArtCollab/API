@@ -10,6 +10,14 @@ import upc.edu.artcollab.api.monetization.infrastructure.persistence.jpa.Commisi
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of the CommisionQueryService interface
+ * <p>
+ *     This class implements the methods defined in the CommisionQueryService interface.
+ * </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 @Service
 public class CommisionQueryServiceImpl implements CommisionQueryService {
 

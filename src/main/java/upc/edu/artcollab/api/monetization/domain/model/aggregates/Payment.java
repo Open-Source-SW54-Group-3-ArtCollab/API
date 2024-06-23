@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
 
 
 /**
- * @summary
- * Created payment aggregate  and implements their attributes
- *  and used lombok annotations for aggregate attributes
- *  and used jakarta persistence annotations for entity and id
- *  and used getter for all attributes
+ * Payment aggregate root
+ * <p>
+ *     This class is the aggregate root for the payment entity
+ * </p>
+ * @author Samira Alvarez Araguache
+ * @version 1.0
  */
 public class Payment {
 

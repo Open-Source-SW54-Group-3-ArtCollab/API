@@ -10,6 +10,14 @@ import upc.edu.artcollab.api.monetization.infrastructure.persistence.jpa.Subscri
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *  SubscriptionQueryServiceImpl implements SubscriptionQueryService
+ *  <p>
+ *      This class is responsible for handling the queries related to Subscription
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 @Service
 public class SubscriptionQueryServiceImpl implements SubscriptionQueryService {
 

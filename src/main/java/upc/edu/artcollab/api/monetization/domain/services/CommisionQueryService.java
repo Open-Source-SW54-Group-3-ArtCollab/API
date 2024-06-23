@@ -14,6 +14,15 @@ import upc.edu.artcollab.api.monetization.domain.model.queries.GetCommisionsByAm
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *  CommisionQueryService interface
+ *  <p>
+ *      This interface provides the methods to handle the queries related to the Commision entity.
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ *
+ **/
 public interface CommisionQueryService {
     Optional<Commision> handle(GetCommisionByIdQuery query);
     List <Commision> handle(GetCommisionsByAmountGreatherThanQuery query);

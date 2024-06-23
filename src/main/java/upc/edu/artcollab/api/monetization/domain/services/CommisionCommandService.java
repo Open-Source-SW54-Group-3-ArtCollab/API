@@ -16,6 +16,14 @@ import upc.edu.artcollab.api.monetization.domain.model.commands.UpdateCommisionC
 
 import java.util.Optional;
 
+/**
+ * CommisionCommandService interface
+ * <p>
+ *     This interface defines the methods that the CommisionCommandService class must implement.
+ * </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 public interface CommisionCommandService {
 
     Optional<Commision> handle(CreateCommisionCommand command);

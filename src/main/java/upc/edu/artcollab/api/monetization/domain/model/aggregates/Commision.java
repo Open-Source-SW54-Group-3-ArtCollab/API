@@ -21,10 +21,12 @@ import upc.edu.artcollab.api.shared.domain.model.aggregate.AuditableAbstractAggr
 import java.time.LocalDateTime;
 
 /**
- * @summary
- * used lombok annotations for aggregate attributes and extends AbstractAggregateRoot for aggregate root
- * and used jakarta persistence annotations for entity and id
- * and used getter for all attributes
+ * Commision aggregate root
+ * <p>
+ *     This class represents the Commision aggregate root.
+ * </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
  */
 
 @Entity

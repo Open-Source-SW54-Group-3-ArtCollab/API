@@ -25,6 +25,14 @@ import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+/**
+ *  SubscriptionController
+ *  <p>
+ *      This class is used to manage the Subscription Controller.
+ *  </p>
+ * @author U202212721 Mathias Jave Diaz
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/v1/monetization/subscriptions")
 @Tag(name = "Subscription", description = "The Subscription Controller")
