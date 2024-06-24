@@ -76,7 +76,6 @@ public class Commision extends AuditableAbstractAggregateRoot<Commision> {
          * and used getter for all attributes
          * and used lombok annotations for aggregate attributes and extends AbstractAggregateRoot for aggregate root
          */
-
     }
 
     public Commision (CreateCommisionCommand command){
@@ -92,8 +91,5 @@ public class Commision extends AuditableAbstractAggregateRoot<Commision> {
         this.content = command.content();
         this.date = LocalDateTime.now();
     }
-
-
-
 
 }
