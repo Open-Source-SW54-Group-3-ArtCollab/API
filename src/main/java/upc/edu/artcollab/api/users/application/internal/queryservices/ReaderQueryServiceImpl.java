@@ -8,6 +8,7 @@ import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByIdQuery;
 import upc.edu.artcollab.api.users.domain.services.ReaderQueryService;
 import upc.edu.artcollab.api.users.infrastructure.persistence.jpa.ReaderRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +30,7 @@ public class ReaderQueryServiceImpl implements ReaderQueryService{
     }
 
     @Override
-    public Optional<Reader> handle(GetAllReadersQuery query) {
+    public List<Reader> handle(GetAllReadersQuery query) {
         return readerRepository.findAllReaders();
     }
 }

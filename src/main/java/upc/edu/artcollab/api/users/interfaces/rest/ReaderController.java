@@ -3,6 +3,7 @@ package upc.edu.artcollab.api.users.interfaces.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upc.edu.artcollab.api.users.domain.model.aggregates.Reader;
@@ -19,7 +20,9 @@ import upc.edu.artcollab.api.users.interfaces.rest.transform.CreateReaderCommand
 import upc.edu.artcollab.api.users.interfaces.rest.transform.ReaderResourceFromEntityAssembler;
 import upc.edu.artcollab.api.users.interfaces.rest.transform.UpdateReaderCommandFromResourceAssembler;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -35,7 +38,7 @@ import static org.springframework.http.HttpStatus.OK;
  * </p>
  *
  * @version 1.0
- * @autor Gustavo Huilca Chipana - u202213983
+ * @author Gustavo Huilca Chipana - u202213983
  */
 
 @ApiResponses(value = {
@@ -46,7 +49,7 @@ import static org.springframework.http.HttpStatus.OK;
 })
 @Tag(name = "Readers", description = "The Reader Controller")
 @RestController
-@RequestMapping("/api/v1/readers")
+@RequestMapping(value = "/api/v1/readers" , produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReaderController {
     private final ReaderCommandService readerCommandService;
     private final ReaderQueryService readerQueryService;
@@ -121,10 +124,11 @@ public class ReaderController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Readers were found")
     })
     @GetMapping
-    public ResponseEntity<ReaderResource> getAllReaders(){
+    public ResponseEntity<List<ReaderResource>> getAllReaders(){
         var query = new GetAllReadersQuery();
-        Optional<Reader> reader = readerQueryService.handle(query);
-        return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
+        List<Reader> reader = readerQueryService.handle(query);
+        var templateResource = reader.stream().map(ReaderResourceFromEntityAssembler::toResourceFromEntity).collect(Collectors.toList());
+        return ResponseEntity.ok(templateResource);
     }
 
     @Operation(summary = "Update a Reader by id", description = "Update a Reader by id")

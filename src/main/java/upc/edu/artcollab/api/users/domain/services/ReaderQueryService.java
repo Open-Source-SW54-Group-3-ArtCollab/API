@@ -5,6 +5,7 @@ import upc.edu.artcollab.api.users.domain.model.queries.GetAllReadersQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByEmailAndPasswordQuery;
 import upc.edu.artcollab.api.users.domain.model.queries.GetReaderByIdQuery;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReaderQueryService {
@@ -15,5 +16,5 @@ public interface ReaderQueryService {
      */
     Optional<Reader> handle(GetReaderByEmailAndPasswordQuery query);
     Optional<Reader> handle(GetReaderByIdQuery query);
-    Optional<Reader> handle(GetAllReadersQuery query);
+    List<Reader> handle(GetAllReadersQuery query);
 }
