@@ -82,7 +82,7 @@ public class ReaderController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was found")
     })
     @Operation(summary = "Get a Reader by id", description = "Get a Reader by id")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ReaderResource> getReaderById(@PathVariable Long id) {
         Optional<Reader> reader = readerQueryService.handle(new GetReaderByIdQuery(id));
         return reader.map(r -> new ResponseEntity<>(ReaderResourceFromEntityAssembler.toResourceFromEntity(r), OK)).orElseGet(() -> ResponseEntity.notFound().build());
@@ -95,7 +95,7 @@ public class ReaderController {
      * @return the Reader
      */
     @Operation(summary = "Get a Reader by email and password", description = "Get a Reader by email and password")
-    @GetMapping("{email}/{password}")
+    @GetMapping("/{email}/{password}")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was found")
@@ -109,7 +109,7 @@ public class ReaderController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was deleted")
     })
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ReaderResource> deleteReader(@PathVariable long id){
         var command = new DeleteReaderCommand(id);
         Optional<Reader> reader = readerCommandService.handle(command);
@@ -132,7 +132,7 @@ public class ReaderController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The Reader was not found"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "The Reader was updated")
     })
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ReaderResource> updateReader(@PathVariable long id, UpdateReaderResource updateReaderResource){
         var command = UpdateReaderCommandFromResourceAssembler.toCommandFromResource(id,updateReaderResource);
         Optional<Reader> reader = readerCommandService.handle(command);
